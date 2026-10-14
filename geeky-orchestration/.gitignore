@@ -8,3 +8,5 @@ mcp/.venv/
 mcp/uv.lock
 .venv/
 */.plugin-eval/**/*
+# Node mirror dev tooling (runtime is dependency-free; see package.json).
+node_modules/

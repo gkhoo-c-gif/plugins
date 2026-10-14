@@ -1,0 +1,18 @@
+{
+  "name": "geeky-orchestration-node",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Dev tooling for the Node/TypeScript mirror of the geeky-orchestration gates and MCP server. The runtime has zero dependencies; these are type-check and test tools only.",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "scripts": {
+    "test": "node --test --disable-warning=ExperimentalWarning \"tests/*.test.mts\"",
+    "typecheck": "tsc -p tsconfig.json",
+    "wire-baseline": "node mcp/wire-baseline.mts --out /dev/stdout"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}
