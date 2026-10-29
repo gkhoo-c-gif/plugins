@@ -54,7 +54,9 @@ function New-EvalExecution([int]$Budget, [int]$Reserve, [int]$Recoveries, [strin
         schema = 'geeky-eval.execution/1'; state = 'prepared'
         attempt_id = [guid]::NewGuid().ToString(); segment_id = [guid]::NewGuid().ToString()
         authorization_reference = $Authorization; allowed_recoveries = $Recoveries; qualification_waiver = $Waiver
-        initial_deadline_utc = [DateTime]::UtcNow.AddSeconds($Budget).ToString('o')
+        # Microseconds, not .NET's 7-digit 'o' ticks: the contestant's workflow-budget.py parses this with
+        # datetime.fromisoformat, which rejects 7 fractional digits before Python 3.11.
+        initial_deadline_utc = [DateTime]::UtcNow.AddSeconds($Budget).ToString("yyyy-MM-dd'T'HH:mm:ss.ffffff'Z'")
         hard_wall_budget_s = $Budget; closeout_reserve_s = $Reserve; closeout_policy = 'advisory-within-hard-wall'
         configuration = $Configuration
         configuration_sha256 = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($json))).ToLowerInvariant()
