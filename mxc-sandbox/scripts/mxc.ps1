@@ -57,5 +57,8 @@ if ($Rebuild -or -not (Test-Path $exe) -or $current.Trim() -ne $hash) {
     Set-Content $stamp $hash -NoNewline
 }
 
-& $exe @HostArgs
+# Outside Windows, start the framework-dependent host through dotnet. The apphost that dotnet
+# build emits is only ad-hoc signed, which allowlisting tools such as Santa in Lockdown mode
+# kill on launch, while the Microsoft-signed dotnet host is commonly allowed.
+if ($onWindows) { & $exe @HostArgs } else { & dotnet (Join-Path $binDir 'MxcClaude.dll') @HostArgs }
 exit $LASTEXITCODE

@@ -70,6 +70,12 @@ $python = @((Get-Command python, python3 -All -ErrorAction SilentlyContinue).Sou
     & $venvPython (Join-Path $ToolsDir 'agent-py')) |
     Where-Object { $_ -and (Test-Path $_) } | Where-Object { & $_ -c 'import pytest' 2>$null; -not $LASTEXITCODE } | Select-Object -First 1
 if (-not $python) { throw 'no Python with pytest found' }
+# GEEKY_EVAL_MCP_RUNTIME=node serves geeky_mcp from the dependency-free Node twin (mcp/server.mts),
+# for hosts with no allowed Python that can install the mcp package (it needs Python 3.10+).
+$nodeMcp = $env:GEEKY_EVAL_MCP_RUNTIME -eq 'node'
+if ($nodeMcp) {
+    $nodeExe = (Get-Command node -ErrorAction Stop).Source
+} else {
 # Windows: the venv launcher cannot start inside MXC, so geeky_mcp runs on the base interpreter. Elsewhere
 # the venv's python is a symlink to a system interpreter the sandbox can see.
 $mcpPython = if ($onWindows) {
@@ -77,6 +83,7 @@ $mcpPython = if ($onWindows) {
     Join-Path $venvHome 'python.exe'
 } else { & $venvPython (Join-Path $ToolsDir 'geeky-mcp') }
 $mcpSitePackages = (& (& $venvPython (Join-Path $ToolsDir 'geeky-mcp')) -c "import sysconfig; print(sysconfig.get_paths()['purelib'])").Trim()
+}
 $agentPy = Join-Path $ToolsDir 'agent-py'   # venv with pytest, first on the sandbox PATH
 $agentPython = & $venvPython $agentPy
 if (-not (Test-Path $agentPython)) { throw "missing $agentPy (uv venv + uv pip install --offline pytest)" }
@@ -158,8 +165,13 @@ Assert-EvalWorkflowBudgetExport $plugin $pluginRun
 $hashTree = { param($dir) (Get-ChildItem $dir -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]__pycache__[\\/]' } | Sort-Object FullName | ForEach-Object { (Get-FileHash $_.FullName -Algorithm SHA256).Hash }) -join '' }
 $exportHash = & $hashTree $pluginRun
 $mcpDir = Join-Path $pluginRun 'mcp'
+if ($nodeMcp) {
+    @{ mcpServers = @{ geeky = @{ command = $nodeExe; args = @('--disable-warning=ExperimentalWarning', (Join-Path $mcpDir 'server.mts')) } } } |
+        ConvertTo-Json -Depth 6 | Set-Content (Join-Path $cfg 'mcp.json')
+} else {
 $boot = "import site,runpy,sys; site.addsitedir(r'$mcpSitePackages'); sys.path.insert(0, r'$mcpDir'); sys.argv=[r'$(Join-Path $mcpDir 'server.py')']; runpy.run_path(sys.argv[0], run_name='__main__')"
 @{ mcpServers = @{ geeky = @{ command = $mcpPython; args = @('-u', '-c', $boot) } } } | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $cfg 'mcp.json')
+}
 . (Join-Path $plugin 'evals/telemetry/telemetry.ps1')
 $telemetry = Resolve-EvalTelemetry -Harness claude-code -ToolsDir $ToolsDir -Case $Case -Stamp $stamp -PluginSha $pluginSha `
     -ConfigDir $cfg -StateDir (Join-Path $cfg 'langfuse') -Model $Model `
@@ -225,6 +237,9 @@ $hostArgs = @('run', '--workspace', $ws, '--isolated', '--allow-win32k', '--host
     '--env', 'GIT_AUTHOR_NAME=geeky-eval-agent', '--env', 'GIT_AUTHOR_EMAIL=agent@geeky-eval.local',
     '--env', 'GIT_COMMITTER_NAME=geeky-eval-agent', '--env', 'GIT_COMMITTER_EMAIL=agent@geeky-eval.local')
 if ($MockAgent -and $MockScenario -eq 'c0-full') { $hostArgs += '--deny-net' }
+# GEEKY_EVAL_EXTRA_RO: extra read-only grants (PATH-separated), e.g. an interpreter's standard library
+# that sits outside the folders the host derives from PATH.
+foreach ($dir in @(($env:GEEKY_EVAL_EXTRA_RO ?? '') -split [IO.Path]::PathSeparator | Where-Object { $_ })) { $hostArgs += @('--ro', $dir) }
 if ($Effort) {
     # The environment override also reaches subagent/reviewer requests and any child Claude process.
     $hostArgs += @('--env', "CLAUDE_CODE_EFFORT_LEVEL=$Effort")

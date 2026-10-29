@@ -203,6 +203,15 @@ ContainerRequest BuildProcessContainerRequest(string command)
             Network = new NetworkPolicy
             {
                 Egress = new NetworkEgressPolicy { Default = opt.DenyNet ? NetworkAction.Deny : NetworkAction.Allow },
+                // --host-loopback reaches host 127.0.0.1, e.g. a local gateway or certificate proxy.
+                // An omitted HostLoopback is Deny. Seatbelt ties inbound loopback to the inbound
+                // default, and the SDK rejects allow-loopback with deny-default, so on macOS the
+                // option opens both.
+                Ingress = new NetworkIngressPolicy
+                {
+                    Default = opt.HostLoopback && OperatingSystem.IsMacOS() ? NetworkAction.Allow : NetworkAction.Deny,
+                    HostLoopback = opt.HostLoopback ? NetworkAction.Allow : NetworkAction.Deny,
+                },
             },
             WorkingDirectory = opt.Workspace,
             Environment = environment,
@@ -279,7 +288,14 @@ static (List<string> RuntimeDirs, Dictionary<string, string> Caches) RuntimeGran
     };
     // Bubblewrap otherwise sets HOME to the working directory, so the CLI and pwsh write
     // .cache/ into the workspace, where a `git add -A` commits it. A caller's --env HOME still wins.
-    if (!OperatingSystem.IsWindows()) caches["HOME"] = Path.Combine(stateRoot, "posix-home");
+    if (!OperatingSystem.IsWindows())
+    {
+        caches["HOME"] = Path.Combine(stateRoot, "posix-home");
+        // TEMP/TMP are Windows names. POSIX tools read TMPDIR, and the claude CLI reads
+        // CLAUDE_CODE_TMPDIR, falling back to /tmp/claude, which the sandbox cannot write.
+        caches["TMPDIR"] = caches["TEMP"];
+        caches["CLAUDE_CODE_TMPDIR"] = caches["TEMP"];
+    }
     return (runtimeDirs, caches);
 }
 
