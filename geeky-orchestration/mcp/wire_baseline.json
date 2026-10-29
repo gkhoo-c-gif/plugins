@@ -357,7 +357,7 @@
           "readOnlyHint": true,
           "title": "Check commit message"
         },
-        "description": "Validate a commit message: Conventional Commits subject + a task reference.\n\nErrors (ok=false): subject not 'type(scope): summary'; subject > 72 chars; no\ntask reference. A bare T<n> without a 'Tasks:' line is a warning, not an error.\n\nArgs:\n    params (CommitInput): message = full commit message text.\n\nReturns:\n    dict: { ok: bool, subject: str, errors: [str], warnings: [str], exit_code: int }.\n",
+        "description": "Validate a Conventional Commits subject and task reference (or docs-only none).\n\nErrors (ok=false): subject not 'type(scope): summary'; subject > 72 chars; no\ntask reference; 'Tasks: none' on a non-docs commit. A case-insensitive\n'Tasks: none' line satisfies the task rule for docs commits. A bare T<n>\nwithout a 'Tasks:' line is a warning, not an error.\n\nArgs:\n    params (CommitInput): message = full commit message text.\n\nReturns:\n    dict: { ok: bool, subject: str, errors: [str], warnings: [str], exit_code: int }.\n",
         "inputSchema": {
           "$defs": {
             "CommitInput": {

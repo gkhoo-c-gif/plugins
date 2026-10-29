@@ -414,10 +414,12 @@ Returns:
   {
     name: "geeky_check_commit",
     title: "Check commit message",
-    description: `Validate a commit message: Conventional Commits subject + a task reference.
+    description: `Validate a Conventional Commits subject and task reference (or docs-only none).
 
 Errors (ok=false): subject not 'type(scope): summary'; subject > 72 chars; no
-task reference. A bare T<n> without a 'Tasks:' line is a warning, not an error.
+task reference; 'Tasks: none' on a non-docs commit. A case-insensitive
+'Tasks: none' line satisfies the task rule for docs commits. A bare T<n>
+without a 'Tasks:' line is a warning, not an error.
 
 Args:
     params (CommitInput): message = full commit message text.

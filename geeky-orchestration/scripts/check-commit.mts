@@ -13,7 +13,9 @@
  *     (scope optional; '!' optional)
  *   - subject length <= 72 chars
  *   - a task reference exists somewhere in the message: a "Tasks:" line, or a
- *     bare T<number> token (warn-only if only a bare token, error if neither).
+ *     bare T<number> token (warn-only if only a bare token, error if neither),
+ *     unless a docs commit has a case-insensitive "Tasks: none" line.
+ *   - a "Tasks: none" line is an error for every type other than docs.
  *
  * Message source (first that is provided):
  *   --message "..."
@@ -33,8 +35,10 @@ import {
 } from "./lib/py-compat.mts";
 
 const TYPES = "feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert";
-const SUBJECT_RE = pyRe(String.raw`^(?:${TYPES})(?:\([^)]+\))?!?: .+`);
+// (?<type>...) is JavaScript syntax for check-commit.py's (?P<type>...); pyRe passes it through.
+const SUBJECT_RE = pyRe(String.raw`^(?<type>${TYPES})(?:\([^)]+\))?!?: .+`);
 const TASKS_LINE_RE = pyRe(String.raw`^\s*Tasks:\s*.*\bT\d+\b`, "im");
+const TASKS_NONE_LINE_RE = pyRe(String.raw`^\s*Tasks:\s*none\b`, "im");
 const BARE_TASK_RE = pyRe(String.raw`\bT\d+\b`);
 const COMMENT_RE = pyRe(String.raw`^\s*#`);
 const MAX_SUBJECT = 72;
@@ -55,12 +59,15 @@ export function check(message: string): CommitReport {
   const errors: string[] = [];
   const warnings: string[] = [];
 
-  if (!SUBJECT_RE.test(subject)) {
+  const subjectMatch = SUBJECT_RE.exec(subject);
+  if (!subjectMatch) {
     errors.push(`subject is not Conventional Commits "type(scope): summary": ${pyRepr(subject)}`);
   }
   if (pyLen(subject) > MAX_SUBJECT) errors.push(`subject exceeds ${MAX_SUBJECT} chars (${pyLen(subject)})`);
 
-  if (TASKS_LINE_RE.test(body)) {
+  if (TASKS_NONE_LINE_RE.test(body)) {
+    if (!subjectMatch || subjectMatch.groups?.type !== "docs") errors.push("Tasks: none is allowed only for docs commits");
+  } else if (TASKS_LINE_RE.test(body)) {
     // a Tasks: line is the recommended form
   } else if (BARE_TASK_RE.test(body)) {
     warnings.push('task referenced but no "Tasks: T<n>" line (recommended)');

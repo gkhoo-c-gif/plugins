@@ -276,3 +276,10 @@ test("IGNORECASE treats i / I / dotless i / dotted I alike, as Python's re does"
   const report = JSON.parse(runScript("scripts/validate-task-schema.mts", ["--file", join(folder, "t.md"), "--json"]).stdout);
   assert.deepEqual(report.results[0].missing_required, []);
 });
+
+test("check-commit: 'Tasks: none' is accepted only for docs commits (upstream 629ae3f)", () => {
+  assert.equal(check("docs(spec): draft brief\n\nTasks: none").ok, true);
+  assert.equal(check("docs: x\n\ntasks: NONE").ok, true);
+  assert.deepEqual(check("feat(x): y\n\nTasks: none").errors, ["Tasks: none is allowed only for docs commits"]);
+  assert.deepEqual(check("not conventional\n\nTasks: none").errors.at(-1), "Tasks: none is allowed only for docs commits");
+});
