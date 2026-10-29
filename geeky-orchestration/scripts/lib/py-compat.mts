@@ -39,7 +39,25 @@ export function pyLen(text: string): number {
   return [...text].length;
 }
 
-type Json = null | boolean | number | string | Json[] | { [key: string]: Json };
+/**
+ * A Python float. JavaScript has one number type, but Python's repr (and so
+ * json.dumps and str()) writes floats with a decimal point: 900.0, not 900.
+ */
+export class PyFloat {
+  readonly value: number;
+  constructor(value: number) { this.value = value; }
+  repr(): string {
+    const v = this.value;
+    if (Number.isNaN(v)) return "NaN";
+    if (!Number.isFinite(v)) return v > 0 ? "Infinity" : "-Infinity";
+    if (Number.isInteger(v) && Math.abs(v) < 1e16) return v.toFixed(1);
+    // Both languages print the shortest round-trip digits; Python pads the exponent (1e-07).
+    return String(v).replace(/e([+-])(\d)$/, "e$10$2");
+  }
+  toString(): string { return this.repr(); }
+}
+
+type Json = null | boolean | number | string | PyFloat | Json[] | { [key: string]: Json };
 
 /** A string as Python's json.dumps (ensure_ascii=True) writes it. */
 function pyJsonString(text: string): string {
@@ -59,16 +77,18 @@ function pyJsonString(text: string): string {
  * JSON.stringify cannot produce; the indented form matches it except for
  * ensure_ascii escaping, which is applied here too.
  */
-export function pyDumps(value: unknown, indent?: number): string {
+export function pyDumps(value: unknown, indent?: number, sortKeys = false): string {
   const step = indent === undefined ? "" : " ".repeat(indent);
   const render = (v: Json, depth: number): string => {
+    if (v instanceof PyFloat) return v.repr();
     if (v === null) return "null";
     if (typeof v === "boolean") return v ? "true" : "false";
     if (typeof v === "number") return String(v);
     if (typeof v === "string") return pyJsonString(v);
     const entries: string[] = Array.isArray(v)
       ? v.map((item) => render(item, depth + 1))
-      : Object.entries(v).map(([k, item]) => pyJsonString(k) + ": " + render(item, depth + 1));
+      : (sortKeys ? Object.entries(v).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)) : Object.entries(v))
+          .map(([k, item]) => pyJsonString(k) + ": " + render(item, depth + 1));
     const [open, close] = Array.isArray(v) ? ["[", "]"] : ["{", "}"];
     if (entries.length === 0) return open + close;
     if (indent === undefined) return open + entries.join(", ") + close;
