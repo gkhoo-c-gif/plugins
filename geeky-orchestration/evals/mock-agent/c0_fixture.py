@@ -178,7 +178,7 @@ def execute(workspace: Path, plugin: Path, prompt: str, report, write_kanban=Non
                 raise RuntimeError(f"kanban write failed: {path}")
             return
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(body, encoding="utf-8", newline="\n")
+        path.write_bytes(body.encode("utf-8"))  # == write_text(newline="\n"); 3.9 has no newline=
 
     def command(name, argv):
         started_at_ms = int(time.time() * 1000)

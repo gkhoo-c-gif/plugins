@@ -366,7 +366,7 @@ class Agent:
 
         def go(_tid=None):
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, encoding="utf-8", newline="\n")
+            path.write_bytes(content.encode("utf-8"))  # == write_text(newline="\n"); 3.9 has no newline=
             return f"File written successfully at: {path}", False, None
         _, err = self.t.tool("Write", {"file_path": str(path), "content": content}, go, parent, agent)
         return not err
@@ -378,7 +378,7 @@ class Agent:
             text = path.read_text(encoding="utf-8")
             if old not in text:
                 return "<tool_use_error>String to replace not found in file.</tool_use_error>", True, None
-            path.write_text(text.replace(old, new, 1), encoding="utf-8", newline="\n")
+            path.write_bytes(text.replace(old, new, 1).encode("utf-8"))
             return f"The file {path} has been updated successfully.", False, None
         _, err = self.t.tool("Edit", {"file_path": str(path), "old_string": old, "new_string": new}, go, parent, agent)
         return not err
