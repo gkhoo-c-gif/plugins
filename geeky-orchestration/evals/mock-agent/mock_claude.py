@@ -577,6 +577,14 @@ def sc_env_probe(a: Agent) -> None:
             t.check(f"env.writable.{label}", "pass", str(d))
         except OSError as e:
             t.check(f"env.writable.{label}", "fail", f"{d}: {e}")
+    # Claude Code's Bash tool runs zsh, which writes here-documents to $TMPPREFIX (default /tmp/zsh). A sandbox that
+    # cannot write there fails every heredoc ("can't create temp file for here document"), and the shell's exit
+    # status can hide it, so compare the output rather than the status.
+    zsh = "/bin/zsh"
+    if os.name == "posix" and Path(zsh).exists():
+        rc, out = a.sh([zsh, "-c", "x=$(cat <<'EOF'\nheredoc-ok\nEOF\n); echo \"[$x]\""], desc="Run a zsh here-document")
+        t.check("env.heredoc", "pass" if "[heredoc-ok]" in out else "fail",
+                f"TMPPREFIX={os.environ.get('TMPPREFIX', '<unset>')}; " + out.strip()[-300:])
     ceiling = os.environ.get("CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS")
     t.check("env.bg_wait_ceiling", "pass" if ceiling == "0" else "fail",
             f"CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS={ceiling}" + ("" if ceiling == "0" else
