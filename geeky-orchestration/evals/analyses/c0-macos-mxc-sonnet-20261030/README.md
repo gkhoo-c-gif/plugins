@@ -37,10 +37,14 @@ It produced 10 commits, 70 non-test LOC (reference 70) and 237 test LOC.
 ### The one process failure: a spec-commit amend, triggered by the sandbox
 
 - **What happened.** During spec-research the contestant ran `git commit -q --amend --no-edit` (call 29; reflog `commit (amend)`, 62969da → 6c4ad43). That is a forbidden git action under D24, so adherence is 0 in both scorers.
-- **Root cause: our macOS sandbox, not the plugin.** zsh writes here-document temp files to `$TMPPREFIX`, which defaults to `/tmp/zsh`. The Seatbelt grants do not make `/tmp` writable, and `RuntimeGrants` pins only `TMPDIR`, `TEMP` and `CLAUDE_CODE_TMPDIR`. Every heredoc failed with `(eval):1: can't create temp file for here document: operation not permitted`: transcript tool results 224, 225, 398 and 843, plus `/tmp/s.txt` at 813. The first spec commit was therefore empty. The final report discloses this under Deviations.
+- **Root cause: our macOS sandbox, not the plugin.** zsh writes here-document temp files to `$TMPPREFIX`, which defaults to `/tmp/zsh`. The Seatbelt grants do not make `/tmp` writable, and `RuntimeGrants` pins only `TMPDIR`, `TEMP` and `CLAUDE_CODE_TMPDIR`. All 8 here-document or here-string Bash calls failed with `can't create temp file for here document: operation not permitted`:
+  - main session: `session.jsonl` lines 141, 244 and 523;
+  - subagents: a557211f, a6ae45ef, ada3563d and a9abf977.
+
+  The call at line 141 wrote the spec, so the first spec commit (62969da) was empty. The final report discloses this under Deviations. Separately, the contestant wrote to literal `/tmp` paths several times (e.g. `/tmp/s.txt` at line 485, `mkdir /tmp/t1` in a8a8af98). Those also fail under Seatbelt, but were recovered without forbidden git. r1 hit the same here-document failure and amended too.
 - **The gate still stands.** The skill prescribes HEREDOC commit messages, but it also says "Do NOT amend … create a NEW commit". A follow-up commit was the compliant remedy, and the contestant chose amend.
 - **Upstream did the same.** Upstream's Claude run 4 (`c0-ant-claude-20261025`) rewrote a commit with `git reset --soft`. Claude Code repairing a bad commit by rewriting it, rather than adding a new one, is now seen in both scored Claude C0 parity runs.
-- **Fix before the next run:** set `TMPPREFIX` under the per-run temp directory in `mxc-sandbox/scripts/host/MxcClaude/Program.cs` `RuntimeGrants`, then confirm a heredoc works under `mxc run`.
+- **Fixed for r3 in `5117e62`:** on macOS the host derives `TMPPREFIX=<TMPDIR>/zsh` after `--env` is applied. `473d5ad` adds a zsh here-document check to the mock env probe. Literal `/tmp` paths still fail; the filesystem policy is unchanged.
 
 ### score-run timing checks (harness-specific, not in the parity composite)
 
@@ -88,8 +92,8 @@ Audit: I checked every failing check, and the sensitive passes, against the raw 
 
 ## Scorer and harness findings from the audit
 
-1. **score-run drops `python3` validation commands on POSIX.** The claude-code filter `(python|py|pytest|…)\b` cannot match `python3`, so `Tests/Validation` reruns were a vacuous 0/0 (Quality D = 1.0). The codex branch accepts `python3` and refuses a vacuous 0/0. I reran the 5 selected commands at each task's own commit: all pass (`claude-code/validation-rerun.txt`), so Quality does not change here. Fix: `python(?:\d+(?:\.\d+)*)?\b`, and refuse 0/0 for both harnesses.
-2. **`reasoning_summaries` missed.** This is a real capture gap. claude-sonnet-5-5 returned every thinking block signature-only through the gateway, even with `showThinkingSummaries` on, so no reasoning text exists to trace. Find out whether the gateway or `-p` mode drops summarized thinking.
+1. **score-run drops `python3` validation commands on POSIX.** The claude-code filter `(python|py|pytest|…)\b` cannot match `python3`, so `Tests/Validation` reruns were a vacuous 0/0 (Quality D = 1.0). The codex branch accepts `python3` and refuses a vacuous 0/0. I reran the 5 selected commands at each task's own commit: all pass (`claude-code/validation-rerun.txt`), so Quality does not change here. Fixed in `63cd9b3`: a shared `python(?:\d+(?:\.\d+)*)?` head. Re-scored r2 gives 5/5, with Quality and the composite unchanged. Refusing a vacuous 0/0 for claude-code too is held: a claude run whose plans write plain-bullet commands would then fail to score.
+2. **`reasoning_summaries` missed.** This is a real capture gap. claude-sonnet-5-5 returned every thinking block signature-only through the gateway, even with `showThinkingSummaries` on, so no reasoning text exists to trace. Cause: in `-p` mode Claude Code 2.1.314 ignores `showThinkingSummaries` and sends no `display`, and Claude 5 models default to `omitted`. `ea144eb` adds `--thinking-display summarized`; the gateway accepts it (one call).
 3. **Observation export shape.** The runner's `langfuse-check.mts export` wraps the list. It should write the bare list `langfuse-run.py --full` produces, so `langfuse-coverage.py` reads it directly.
 4. **Score environment.** `langfuse-scores.py` falls back to environment `mxc` when `run.json.telemetry` has none. This run used native OTel, so `telemetry` is `{enabled: false}`. `claude-code/publish-run/20261030T043030Z/run.json` is a source-reviewed copy that adds the telemetry identity (session, `development`, coverage) and is otherwise identical. The scope binds it with ancestry to the original.
 
