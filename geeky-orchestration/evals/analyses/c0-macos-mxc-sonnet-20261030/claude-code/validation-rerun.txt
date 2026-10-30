@@ -1,0 +1,12 @@
+# Tests/Validation re-run at each task's own commit (2026-10-30, scratch clone, Python 3.9.6 agent-py venv)
+# score-run.py found 0/0 commands: its claude-code filter `(python|py|pytest|...)\b` drops `python3 ...`
+# (the 3 defeats \b). These are the commands a fixed filter would select, run the way rerun_blocks runs them
+# (venv bin first on PATH, PYTHONDONTWRITEBYTECODE=1, PYTEST_ADDOPTS=-p no:cacheprovider).
+293db96 T1 rc=0 :: python3 -m pytest tests/test_core.py -q :: 6 passed in 0.02s
+7154149 T2 rc=0 :: python3 -m pytest tests -q :: 11 passed in 0.27s
+7154149 T2 rc=0 :: python3 -m wordstat --help :: exit 0
+3a00000 T3 rc=0 :: python3 -m pytest tests -q :: 44 passed in 2.44s
+b26076c T4 rc=0 :: python3 -m pytest tests -q :: 44 passed in 2.46s
+# Not in score-run's allowlist (information only):
+b26076c T4 rc=0 :: grep -qx '.pytest_cache/' .gitignore && grep -qx '__pycache__/' .gitignore
+# Result: 5/5 selected commands pass, so Quality D = 1.0 either way; the 0/0 in score.json is vacuous, not a failure.

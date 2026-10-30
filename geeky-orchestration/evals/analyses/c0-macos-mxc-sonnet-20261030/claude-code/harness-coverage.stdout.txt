@@ -1,0 +1,23 @@
+HIT  stage:spec-research               1
+HIT  stage:geeky-plan                  1
+HIT  stage:plan-review                 1
+HIT  stage:geeky-implement             1
+HIT  stage:impl-review                 1
+HIT  subagents                        15
+--   nested_subagents                  0  (info)  a subagent dispatched another (implement orchestrator -> coder/reviewer)
+HIT  role:geeky-coder                  4
+HIT  role:code-reviewer                6
+HIT  gates                            28  validate-planning-folder=6, validate-task-schema=4, validate-kanban=10, check-dod=4, check-commit=4
+HIT  gate:validate-planning-folder     6  (info)
+HIT  gate:validate-task-schema         4  (info)
+HIT  gate:validate-kanban             10  (info)
+HIT  gate:check-dod                    4  (info)
+HIT  gate:check-commit                 4  (info)
+--   mcp_tools                         0  (info)  gates may run as scripts instead
+HIT  pytest                           23
+HIT  git_commit                        7
+HIT  file_edits                       58
+MISS reasoning_summaries               0  thinking (Claude) or reasoning summary (Codex) on generations
+HIT  token_usage                     169
+--   encrypted_handoffs                0  (info)  Codex inter-agent payloads the provider encrypted (no plaintext exists)
+coverage: missing reasoning_summaries (448 observations)

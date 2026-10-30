@@ -1,0 +1,17 @@
+{
+  "tokens": {
+    "input": 12129303,
+    "cached_input": 11757772,
+    "cache_creation": 371155,
+    "output": 128272,
+    "total": 12257575,
+    "cost_usd_estimate": 3.3871,
+    "reasoning": 5042
+  },
+  "model_calls": 101,
+  "latency_median_ms": 3892,
+  "max_idle_gap_s": 98,
+  "impl_review_rounds": 1,
+  "token_ceiling": 6000000,
+  "over_token_ceiling": true
+}

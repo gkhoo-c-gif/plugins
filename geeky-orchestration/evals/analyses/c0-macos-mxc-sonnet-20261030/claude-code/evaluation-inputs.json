@@ -1,0 +1,133 @@
+{
+  "schema": "geeky-eval.inputs/1",
+  "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+  "kind": "initial",
+  "parent_scope_id": null,
+  "description": "C0 c0-wordstat, Claude Code + claude-sonnet-5-5 in MXC (Seatbelt) on macOS: non-reference diagnostic (Python 3.9.6 vs the 3.11+ contract)",
+  "configuration": {
+    "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+    "plugin_sha": "4746ab5fe73f07f0ca5def1e139dccafb27951df"
+  },
+  "sources": [
+    {
+      "id": "run",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/run.json",
+      "sha256": "81098c08d94fe47928fc292814ee3f9778a7a6909950d656da389b4976604a92",
+      "ancestry": []
+    },
+    {
+      "id": "session",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/session.jsonl",
+      "sha256": "69a780f58e35821fed6eda2beb8fea2a687071c08a188b7ce0668456fcfb78cb",
+      "ancestry": []
+    },
+    {
+      "id": "stream",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/stream.jsonl",
+      "sha256": "8e400ea4f08ca4b556ad1c732e5ef25f1092f2f67130822f764d0d6dc5a3dfb3",
+      "ancestry": []
+    },
+    {
+      "id": "transcript-upload",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/telemetry/upload.json",
+      "sha256": "0bc64b0bfea0a4772b3f57e1097171bd4f3a33d2bb58ddc99f148421c5562d54",
+      "ancestry": [
+        "session"
+      ]
+    },
+    {
+      "id": "observations-export",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/telemetry/observations.json",
+      "sha256": "ed200dfed076222a9d641ba1b143b0002f4033162caca0b61123402eb0b3a28c",
+      "ancestry": [
+        "transcript-upload"
+      ]
+    },
+    {
+      "id": "observations",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/langfuse-observations.json",
+      "sha256": "8021aefb33d8fbb93c4b2e6ba87c12dcd1add0ac9d2ccfacc23614eea12a737b",
+      "ancestry": [
+        "observations-export"
+      ]
+    },
+    {
+      "id": "harness-coverage",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/harness-coverage.json",
+      "sha256": "5a0b448f9bc9e4a3c5e6fee78abb81485a5a25fc84d253bfd00379107df1bdb7",
+      "ancestry": [
+        "observations"
+      ]
+    },
+    {
+      "id": "manual-verdicts",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/manual-verdicts.json",
+      "sha256": "dfd88f14fd893c71b9ca543c503e0e27fc48871d4b0f8a29c645bddfaf615b65",
+      "ancestry": [
+        "session",
+        "stream"
+      ]
+    },
+    {
+      "id": "score",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/score.json",
+      "sha256": "155f8f27bcb7ea815bed0d2f82c3a1d17f98a489b3daa2307b6e92bae0b0637f",
+      "ancestry": [
+        "run",
+        "session",
+        "stream",
+        "manual-verdicts"
+      ]
+    },
+    {
+      "id": "publish-run",
+      "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/publish-run/20261030T043030Z/run.json",
+      "sha256": "911867e50f8c9079aedb9a44bd2123ce76e458296cde09677866c54eab8166e9",
+      "ancestry": [
+        "run",
+        "harness-coverage"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "segment_id": "d931752e-bc9f-465c-835a-9e8be52c1cb9",
+      "attempt_id": "5470565a-0d50-4057-98ff-43efe7aa62d7",
+      "authorization_reference": "owner-macos-mxc-20261030-r2",
+      "start": "2026-10-30T04:30:31.747900Z",
+      "end": "2026-10-30T04:51:33.176710Z"
+    }
+  ],
+  "ownership": {
+    "method": "native",
+    "rule": "single initial segment: every captured row, observation and artifact belongs to this attempt (zero recoveries)"
+  },
+  "metric_default": {
+    "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+    "population": "segment d931752e: main session + 15 subagents, one attempt",
+    "source_ids": [
+      "run",
+      "session"
+    ],
+    "additive": false,
+    "complete": true
+  },
+  "metrics": {
+    "coverage": {
+      "source_ids": [
+        "harness-coverage"
+      ],
+      "population": "langfuse-coverage.py harness points over the 448 uploaded observations"
+    },
+    "cost": {
+      "complete": false,
+      "population": "analyze-run list-price estimate; gateway billing not observed"
+    },
+    "backend": {
+      "source_ids": [
+        "run"
+      ],
+      "population": "LiteLLM gateway (claude-sonnet-5-5) via the local certproxy"
+    }
+  }
+}

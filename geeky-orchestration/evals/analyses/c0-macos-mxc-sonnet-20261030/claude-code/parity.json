@@ -1,0 +1,605 @@
+{
+  "schema": "geeky-eval.parity/1",
+  "harness": "claude-code",
+  "run": "eval-c0-wordstat-20261030T043030Z",
+  "session_id": "5a358c3e-fad1-4086-a37a-7dbfdd89a5b9",
+  "composite": 61.11,
+  "quality": 100.0,
+  "adherence": 0.0,
+  "adherence_uncapped": 97.5,
+  "adherence_fraction": "39/40",
+  "consistency": 100.0,
+  "dpc": 1.0,
+  "order": 1.0,
+  "efficiency": {
+    "tokens_total": 12257575,
+    "wall_time_s": 1261.425384833943,
+    "latency_median_ms": 1610,
+    "commits": 10,
+    "interventions": 0,
+    "cost": null
+  },
+  "stage_bounds": {
+    "spec-research": [
+      "2026-10-30T04:30:37.268000+00:00",
+      "2026-10-30T04:36:58.000000+00:00"
+    ],
+    "geeky-plan": [
+      "2026-10-30T04:36:58.000000+00:00",
+      "2026-10-30T04:40:00.000000+00:00"
+    ],
+    "plan-review": [
+      "2026-10-30T04:40:00.000000+00:00",
+      "2026-10-30T04:41:19.000000+00:00"
+    ],
+    "geeky-implement": [
+      "2026-10-30T04:41:19.000000+00:00",
+      "2026-10-30T04:49:34.281000+00:00"
+    ],
+    "impl-review": [
+      "2026-10-30T04:49:34.281000+00:00",
+      "9999"
+    ]
+  },
+  "phases": {
+    "P1": [
+      "T1",
+      "T2"
+    ],
+    "P2": [
+      "T3",
+      "T4"
+    ]
+  },
+  "needs_judge": [],
+  "checks": [
+    {
+      "id": "a.planning_folder",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "OK: planning folder valid. 4 task file(s) found."
+    },
+    {
+      "id": "a.task_schema",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "OK: 4 task file(s) checked, 0 failing."
+    },
+    {
+      "id": "a.kanban_final",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "OK: 4 task(s) tracked, 4 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=4"
+    },
+    {
+      "id": "a.dod.T1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "DOD_OK: T1"
+    },
+    {
+      "id": "a.notes.T1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "T1-scaffold-and-core.notes.md"
+    },
+    {
+      "id": "a.dod.T2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "DOD_OK: T2"
+    },
+    {
+      "id": "a.notes.T2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "T2-cli-and-entrypoint.notes.md"
+    },
+    {
+      "id": "a.dod.T3",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "DOD_OK: T3"
+    },
+    {
+      "id": "a.notes.T3",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "T3-edge-and-error-tests.notes.md"
+    },
+    {
+      "id": "a.dod.T4",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "DOD_OK: T4"
+    },
+    {
+      "id": "a.notes.T4",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "T4-housekeeping-and-final-check.notes.md"
+    },
+    {
+      "id": "a.run_summary",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "Run Summary heading in handoff.md"
+    },
+    {
+      "id": "a.heartbeat_final",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "{\"ts\":\"2026-10-30T05:10:00Z\",\"task\":\"T4\",\"status\":\"done\"}"
+    },
+    {
+      "id": "a.prescribed.spec",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "spec-research commit subject"
+    },
+    {
+      "id": "a.prescribed.plan_review",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "plan-review commit subject exact"
+    },
+    {
+      "id": "a.prescribed.critical_fix",
+      "dimension": "adherence",
+      "status": "na",
+      "evidence": "no critical-fix commit"
+    },
+    {
+      "id": "a.commit_messages",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "7 post-plan-review commits; failing: []"
+    },
+    {
+      "id": "a.frozen_untouched",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "frozen files changed after plan-review: []"
+    },
+    {
+      "id": "a.no_forbidden_git",
+      "dimension": "adherence",
+      "status": "fail",
+      "evidence": "reflog: ['commit (amend): docs: author feature specification in spec-001-feature']; commands: ['{\"command\": \"git add docs/spec-001-feature/ && git commit -q --amend --no-edit &']"
+    },
+    {
+      "id": "a.task_dispatch.T1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "geeky-coder dispatch naming T1"
+    },
+    {
+      "id": "a.task_review.T1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "reviewer dispatch naming T1 or P1"
+    },
+    {
+      "id": "a.dod_gate.T1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "3 check-dod runs naming T1 during implement"
+    },
+    {
+      "id": "a.task_dispatch.T2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "geeky-coder dispatch naming T2"
+    },
+    {
+      "id": "a.task_review.T2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "reviewer dispatch naming T2 or P1"
+    },
+    {
+      "id": "a.dod_gate.T2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "2 check-dod runs naming T2 during implement"
+    },
+    {
+      "id": "a.task_dispatch.T3",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "geeky-coder dispatch naming T3"
+    },
+    {
+      "id": "a.task_review.T3",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "reviewer dispatch naming T3 or P2"
+    },
+    {
+      "id": "a.dod_gate.T3",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "3 check-dod runs naming T3 during implement"
+    },
+    {
+      "id": "a.task_dispatch.T4",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "geeky-coder dispatch naming T4"
+    },
+    {
+      "id": "a.task_review.T4",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "reviewer dispatch naming T4 or P2"
+    },
+    {
+      "id": "a.dod_gate.T4",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "1 check-dod runs naming T4 during implement"
+    },
+    {
+      "id": "a.phase_verdict.P1",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "2 reviewer dispatches; verdict recorded: True"
+    },
+    {
+      "id": "a.phase_verdict.P2",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "1 reviewer dispatches; verdict recorded: True"
+    },
+    {
+      "id": "a.kanban_gate",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "4 validate-kanban runs for 4 tasks"
+    },
+    {
+      "id": "a.commit_gate",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "6 check-commit runs for 4 code commits"
+    },
+    {
+      "id": "a.tests_run",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "14 pytest runs during implement"
+    },
+    {
+      "id": "a.no_orchestrator_code_edits",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "main-thread code/test writes: []"
+    },
+    {
+      "id": "a.run_completed",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "exit_reason completed"
+    },
+    {
+      "id": "a.work_committed",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "uncommitted at the end: []"
+    },
+    {
+      "id": "a.one_concern_per_commit",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "judge: 3/3 blind judges: each of the 10 contestant commits is one logical concern. Feature commits carry their own tests (293db96 T1, 7154149 T2, 3a00000 T3 tests, b26076c T4 housekeeping); 56e5888, b863853 and 70d7449 touch only docs/spec-001-feature/. One rider: T2's run() helper in 293db96 tests/conftest.py, disclosed under Deviations; not an unrelated functional concern (checkpoint-5 Q5)."
+    },
+    {
+      "id": "a.final_report_claims",
+      "dimension": "adherence",
+      "status": "pass",
+      "evidence": "judge: 3/3 blind judges: process claims verified. Reviewer verdicts match the subagent transcripts (a8220fb PASS WITH WARNINGS, aad097e PASS, a527af7/a93c7b8 READY TO ADVANCE, a77a8a3/a3fb1d4/a5cff00 PASS WITH WARNINGS); validators and check-dod T1-T4 ran as stated; the spec amend and the Python 3.11 gap are disclosed. Omissions, not false claims: no reviewer agent IDs cited; heartbeat deviation understated (5 of 6 stamps future-dated)."
+    },
+    {
+      "id": "dp01",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "3 spec-research dispatches"
+    },
+    {
+      "id": "dp02",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "see a.prescribed.spec"
+    },
+    {
+      "id": "dp03",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "review-development-project-manager.md"
+    },
+    {
+      "id": "dp04",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "2 plan-review dispatches"
+    },
+    {
+      "id": "dp05",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "see a.prescribed.plan_review"
+    },
+    {
+      "id": "dp09",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "every task reviewed"
+    },
+    {
+      "id": "dp10",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "DoD gate for every task"
+    },
+    {
+      "id": "dp11",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "phase verdict for every phase"
+    },
+    {
+      "id": "dp12",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "see a.commit_gate"
+    },
+    {
+      "id": "dp15",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "see a.run_summary"
+    },
+    {
+      "id": "dp16",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "3 impl-review dispatches"
+    },
+    {
+      "id": "dp18",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "see a.heartbeat_final"
+    },
+    {
+      "id": "dp07",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "judge: 3/3 blind judges: the four geeky-coder dispatches ran strictly one at a time (session.jsonl :429, :468, :568, :599) along the declared chain T1->T2->T3->T4. The orchestrator states 'linear chain, so execution is serial' (:420), and review-plan.md Phase 3 records the sequencing review rejecting a T3/T4 concurrency split. Gap: no per-task parallelization checklist in the notes."
+    },
+    {
+      "id": "dp13",
+      "dimension": "consistency",
+      "status": "pass",
+      "evidence": "judge: 3/3 blind judges: no commit straddles phases. spec 6c4ad43; plan f228b89; plan-review 0185510; implement P1 293db96, 7154149, 56e5888; P2 3a00000, b26076c, b863853; impl-review 70d7449."
+    }
+  ],
+  "evaluation_scope": {
+    "schema": "geeky-eval.inputs/1",
+    "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+    "kind": "initial",
+    "parent_scope_id": null,
+    "description": "C0 c0-wordstat, Claude Code + claude-sonnet-5-5 in MXC (Seatbelt) on macOS: non-reference diagnostic (Python 3.9.6 vs the 3.11+ contract)",
+    "configuration": {
+      "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+      "plugin_sha": "4746ab5fe73f07f0ca5def1e139dccafb27951df"
+    },
+    "sources": [
+      {
+        "id": "run",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/run.json",
+        "sha256": "81098c08d94fe47928fc292814ee3f9778a7a6909950d656da389b4976604a92",
+        "ancestry": []
+      },
+      {
+        "id": "session",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/session.jsonl",
+        "sha256": "69a780f58e35821fed6eda2beb8fea2a687071c08a188b7ce0668456fcfb78cb",
+        "ancestry": []
+      },
+      {
+        "id": "stream",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/stream.jsonl",
+        "sha256": "8e400ea4f08ca4b556ad1c732e5ef25f1092f2f67130822f764d0d6dc5a3dfb3",
+        "ancestry": []
+      },
+      {
+        "id": "transcript-upload",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/telemetry/upload.json",
+        "sha256": "0bc64b0bfea0a4772b3f57e1097171bd4f3a33d2bb58ddc99f148421c5562d54",
+        "ancestry": [
+          "session"
+        ]
+      },
+      {
+        "id": "observations-export",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/baselines/c0-wordstat/20261030T043030Z/telemetry/observations.json",
+        "sha256": "ed200dfed076222a9d641ba1b143b0002f4033162caca0b61123402eb0b3a28c",
+        "ancestry": [
+          "transcript-upload"
+        ]
+      },
+      {
+        "id": "observations",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/langfuse-observations.json",
+        "sha256": "8021aefb33d8fbb93c4b2e6ba87c12dcd1add0ac9d2ccfacc23614eea12a737b",
+        "ancestry": [
+          "observations-export"
+        ]
+      },
+      {
+        "id": "harness-coverage",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/harness-coverage.json",
+        "sha256": "5a0b448f9bc9e4a3c5e6fee78abb81485a5a25fc84d253bfd00379107df1bdb7",
+        "ancestry": [
+          "observations"
+        ]
+      },
+      {
+        "id": "manual-verdicts",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/manual-verdicts.json",
+        "sha256": "dfd88f14fd893c71b9ca543c503e0e27fc48871d4b0f8a29c645bddfaf615b65",
+        "ancestry": [
+          "session",
+          "stream"
+        ]
+      },
+      {
+        "id": "score",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/score.json",
+        "sha256": "155f8f27bcb7ea815bed0d2f82c3a1d17f98a489b3daa2307b6e92bae0b0637f",
+        "ancestry": [
+          "run",
+          "session",
+          "stream",
+          "manual-verdicts"
+        ]
+      },
+      {
+        "id": "publish-run",
+        "path": "/Users/gkhoo-c/.Projects/geekhoo-plugins-macos-mxc/geeky-orchestration/evals/analyses/c0-macos-mxc-sonnet-20261030/claude-code/publish-run/20261030T043030Z/run.json",
+        "sha256": "911867e50f8c9079aedb9a44bd2123ce76e458296cde09677866c54eab8166e9",
+        "ancestry": [
+          "run",
+          "harness-coverage"
+        ]
+      }
+    ],
+    "segments": [
+      {
+        "segment_id": "d931752e-bc9f-465c-835a-9e8be52c1cb9",
+        "attempt_id": "5470565a-0d50-4057-98ff-43efe7aa62d7",
+        "authorization_reference": "owner-macos-mxc-20261030-r2",
+        "start": "2026-10-30T04:30:31.747900Z",
+        "end": "2026-10-30T04:51:33.176710Z"
+      }
+    ],
+    "ownership": {
+      "method": "native",
+      "rule": "single initial segment: every captured row, observation and artifact belongs to this attempt (zero recoveries)"
+    },
+    "metric_default": {
+      "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+      "population": "segment d931752e: main session + 15 subagents, one attempt",
+      "source_ids": [
+        "run",
+        "session"
+      ],
+      "additive": false,
+      "complete": true
+    },
+    "metrics": {
+      "coverage": {
+        "source_ids": [
+          "harness-coverage"
+        ],
+        "population": "langfuse-coverage.py harness points over the 448 uploaded observations"
+      },
+      "cost": {
+        "complete": false,
+        "population": "analyze-run list-price estimate; gateway billing not observed"
+      },
+      "backend": {
+        "source_ids": [
+          "run"
+        ],
+        "population": "LiteLLM gateway (claude-sonnet-5-5) via the local certproxy"
+      }
+    },
+    "input_sha256": "f12321b3480dc9c818b9c14eb0327fe7b9070797436832175eb454364493d8c7",
+    "metric_labels": {
+      "runtime": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "segment d931752e: main session + 15 subagents, one attempt",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "tokens": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "segment d931752e: main session + 15 subagents, one attempt",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "calls": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "segment d931752e: main session + 15 subagents, one attempt",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "latency_idle": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "segment d931752e: main session + 15 subagents, one attempt",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "commits": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "segment d931752e: main session + 15 subagents, one attempt",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "coverage": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "langfuse-coverage.py harness points over the 448 uploaded observations",
+        "source_ids": [
+          "harness-coverage"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "backend": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "LiteLLM gateway (claude-sonnet-5-5) via the local certproxy",
+        "source_ids": [
+          "run"
+        ],
+        "additive": false,
+        "complete": true
+      },
+      "cost": {
+        "scope_id": "c0-macos-mxc-sonnet-20261030-r2",
+        "population": "analyze-run list-price estimate; gateway billing not observed",
+        "source_ids": [
+          "run",
+          "session"
+        ],
+        "additive": false,
+        "complete": false
+      }
+    },
+    "completeness": "sources-verified",
+    "missing_sources": []
+  },
+  "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+  "plugin_sha": "4746ab5fe73f07f0ca5def1e139dccafb27951df"
+}
