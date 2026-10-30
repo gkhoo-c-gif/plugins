@@ -1,0 +1,54 @@
+.............                                                            [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+PASSED oracle_wordstat.py::test_w2_example_text
+PASSED oracle_wordstat.py::test_w3_example_json_top2
+PASSED oracle_wordstat.py::test_w4_default_top_is_three
+PASSED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct
+PASSED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other
+PASSED oracle_wordstat.py::test_w7_empty_file
+PASSED oracle_wordstat.py::test_w8_bom_and_crlf
+PASSED oracle_wordstat.py::test_w9_missing_file
+PASSED oracle_wordstat.py::test_w9_directory
+PASSED oracle_wordstat.py::test_w9_invalid_utf8
+PASSED oracle_wordstat.py::test_w10_usage_errors
+PASSED oracle_wordstat.py::test_w11_deterministic_no_cr
+13 passed in 1.07s
+
+.............                                                            [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+PASSED oracle_wordstat.py::test_w2_example_text
+PASSED oracle_wordstat.py::test_w3_example_json_top2
+PASSED oracle_wordstat.py::test_w4_default_top_is_three
+PASSED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct
+PASSED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other
+PASSED oracle_wordstat.py::test_w7_empty_file
+PASSED oracle_wordstat.py::test_w8_bom_and_crlf
+PASSED oracle_wordstat.py::test_w9_missing_file
+PASSED oracle_wordstat.py::test_w9_directory
+PASSED oracle_wordstat.py::test_w9_invalid_utf8
+PASSED oracle_wordstat.py::test_w10_usage_errors
+PASSED oracle_wordstat.py::test_w11_deterministic_no_cr
+13 passed in 1.08s
+
+.............                                                            [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+PASSED oracle_wordstat.py::test_w2_example_text
+PASSED oracle_wordstat.py::test_w3_example_json_top2
+PASSED oracle_wordstat.py::test_w4_default_top_is_three
+PASSED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct
+PASSED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other
+PASSED oracle_wordstat.py::test_w7_empty_file
+PASSED oracle_wordstat.py::test_w8_bom_and_crlf
+PASSED oracle_wordstat.py::test_w9_missing_file
+PASSED oracle_wordstat.py::test_w9_directory
+PASSED oracle_wordstat.py::test_w9_invalid_utf8
+PASSED oracle_wordstat.py::test_w10_usage_errors
+PASSED oracle_wordstat.py::test_w11_deterministic_no_cr
+13 passed in 1.37s
+

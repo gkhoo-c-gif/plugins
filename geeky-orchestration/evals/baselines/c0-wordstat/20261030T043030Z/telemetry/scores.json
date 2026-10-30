@@ -1,0 +1,76 @@
+{
+  "schema": "geeky-eval.langfuse-scores/1",
+  "session_id": "5a358c3e-fad1-4086-a37a-7dbfdd89a5b9",
+  "dry_run": false,
+  "ok": true,
+  "statuses": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200
+  ],
+  "scores": [
+    {
+      "name": "geeky.oracle.passed",
+      "dataType": "NUMERIC",
+      "value": 13
+    },
+    {
+      "name": "geeky.oracle.failed",
+      "dataType": "NUMERIC",
+      "value": 0
+    },
+    {
+      "name": "geeky.oracle.errors",
+      "dataType": "NUMERIC",
+      "value": 0
+    },
+    {
+      "name": "geeky.oracle.pass_rate",
+      "dataType": "NUMERIC",
+      "value": 1
+    },
+    {
+      "name": "geeky.oracle.stable",
+      "dataType": "BOOLEAN",
+      "value": 1
+    },
+    {
+      "name": "geeky.wall_time_s",
+      "dataType": "NUMERIC",
+      "value": 1261
+    },
+    {
+      "name": "geeky.tokens.total",
+      "dataType": "NUMERIC",
+      "value": 12257575
+    },
+    {
+      "name": "geeky.model_calls",
+      "dataType": "NUMERIC",
+      "value": 101
+    },
+    {
+      "name": "geeky.commits",
+      "dataType": "NUMERIC",
+      "value": 10
+    },
+    {
+      "name": "geeky.exit_reason",
+      "dataType": "CATEGORICAL",
+      "value": "completed"
+    },
+    {
+      "name": "geeky.reference_eligible",
+      "dataType": "BOOLEAN",
+      "value": 1
+    }
+  ]
+}

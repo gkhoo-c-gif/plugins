@@ -1,0 +1,48 @@
+{
+  "schema": "geeky-eval.transcript-upload/1",
+  "uploader": {
+    "name": "geeky-eval-transcript-otlp",
+    "version": "1.0.0"
+  },
+  "session_id": "5a358c3e-fad1-4086-a37a-7dbfdd89a5b9",
+  "dry_run": false,
+  "ok": true,
+  "counts": {
+    "turns": 14,
+    "llm_calls": 101,
+    "tools": 250,
+    "tool_errors": 12,
+    "subagents": 15,
+    "subagent_llm_calls": 68,
+    "spans": 448,
+    "traces": 14
+  },
+  "expected_names": {
+    "Conversational Turn": 14,
+    "LLM Call": 101,
+    "Tool: *": 250,
+    "Subagent: *": 15,
+    "Subagent LLM Call": 68
+  },
+  "batches": [
+    200,
+    200,
+    200
+  ],
+  "trace_ids": [
+    "b9ab0aab7b8d2c1954039606fffd9a4d",
+    "4ccec139f7ac1160ec74e705358d0a6e",
+    "71ebccb6f0969b4baf5f7913ee7dfeae",
+    "9e86d92b61d0d8c51dd82b60464ebf09",
+    "0a0d3ea209fb2d3e93c5794a46016d43",
+    "9cc6d966fb9223cc0c68fc7de9553ab9",
+    "cd791d760a87b58507c4edbf5adedede",
+    "7eeb263eb3d3cddb656059ac3990265b",
+    "8271b1fc613252ff66d617fe6f17b869",
+    "5b0d930486002b0e8c89f2663b311509",
+    "b7a5786c5484b70bb513ea57c9ef67e0",
+    "a366c8e4d3c10ac9173bf34cc620e697",
+    "a371f212a4f32344eb0264f6e88271b5",
+    "0b2d89a7828d1684c253d2a2f84ce1f9"
+  ]
+}
