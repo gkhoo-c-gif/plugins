@@ -253,9 +253,34 @@ if ($Litellm) {
         '--env', 'CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1')
 }
 
+# GEEKY_EVAL_OTEL=1: Claude Code's built-in OpenTelemetry export (runs inside the CLI on Node, no
+# Python hook), sent to Langfuse's OTLP endpoint. The Basic-auth header is derived here from
+# LANGFUSE_PUBLIC_KEY/SECRET_KEY and every value reaches the sandbox by name only, never on a
+# command line. Observes the run; adds nothing the contestant can read.
+$nativeOtel = $null
+if ($env:GEEKY_EVAL_OTEL -in '1', 'true') {
+    if (-not $env:LANGFUSE_PUBLIC_KEY -or -not $env:LANGFUSE_SECRET_KEY -or -not $env:OTEL_EXPORTER_OTLP_ENDPOINT) {
+        throw 'GEEKY_EVAL_OTEL needs LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY and OTEL_EXPORTER_OTLP_ENDPOINT'
+    }
+    $basic = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("$($env:LANGFUSE_PUBLIC_KEY):$($env:LANGFUSE_SECRET_KEY)"))
+    $env:OTEL_EXPORTER_OTLP_HEADERS = "Authorization=Basic $basic"
+    $runAttributes = "geeky.case=$Case,geeky.stamp=$stamp,geeky.harness=claude-code,langfuse.session.id=$sid"
+    $env:OTEL_RESOURCE_ATTRIBUTES = (@($env:OTEL_RESOURCE_ATTRIBUTES, $runAttributes) | Where-Object { $_ }) -join ','
+    $otelNames = @('CLAUDE_CODE_ENABLE_TELEMETRY', 'CLAUDE_CODE_ENHANCED_TELEMETRY_BETA', 'OTEL_EXPORTER_OTLP_ENDPOINT',
+        'OTEL_EXPORTER_OTLP_PROTOCOL', 'OTEL_EXPORTER_OTLP_HEADERS', 'OTEL_LOGS_EXPORTER', 'OTEL_METRICS_EXPORTER',
+        'OTEL_TRACES_EXPORTER', 'OTEL_RESOURCE_ATTRIBUTES', 'OTEL_SERVICE_NAME', 'LANGFUSE_TRACING_ENVIRONMENT') |
+        Where-Object { [Environment]::GetEnvironmentVariable($_) }
+    foreach ($name in $otelNames) { $hostArgs += @('--env', $name) }
+    $nativeOtel = [ordered]@{ enabled = $true; channel = 'claude-code-otel'; endpoint = $env:OTEL_EXPORTER_OTLP_ENDPOINT
+        protocol = $env:OTEL_EXPORTER_OTLP_PROTOCOL; service_name = $env:OTEL_SERVICE_NAME; session_attribute = $sid
+        exporters = [ordered]@{ traces = $env:OTEL_TRACES_EXPORTER; logs = $env:OTEL_LOGS_EXPORTER; metrics = $env:OTEL_METRICS_EXPORTER }
+        variables = @($otelNames) }
+}
+
 $record = [ordered]@{
     schema = 'geeky-eval.baseline/1'; case = $Case; harness = 'claude-code'; model = $Model; reasoning = $configuredEffort
     workspace = $ws; config_directory = $cfg; seed_sha = $baseSha; plugin_sha = $pluginSha; prompt_sha256 = $promptSha
+    native_otel = $(if ($nativeOtel) { $nativeOtel } else { [ordered]@{ enabled = $false } })
     session_id = $sid; started_utc = $null; ended_utc = $null; wall_time_s = $null
     exit_code = $null; exit_reason = 'prepared'; is_error = $false; reference_eligible = $false
     token_ceiling = $caseCfg.token_ceiling; token_ceiling_policy = 'informational'
