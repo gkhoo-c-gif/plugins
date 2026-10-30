@@ -15,5 +15,5 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
-  "include": ["scripts/**/*.mts", "hooks/**/*.mts", "mcp/**/*.mts", "tests/**/*.mts"]
+  "include": ["scripts/**/*.mts", "hooks/**/*.mts", "mcp/**/*.mts", "tests/**/*.mts", "evals/telemetry/**/*.mts"]
 }
