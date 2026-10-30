@@ -1,0 +1,74 @@
+MOCK CHECK PASS init.plugin_skills: 8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research
+MOCK CHECK PASS env.pwsh: PSVersion=7.6.9 | USER=
+MOCK CHECK PASS env.python: /Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python: 3.9.6 /Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python
+MOCK CHECK PASS env.pytest: pytest 8.4.2
+MOCK CHECK PASS env.git_identity: geeky-eval-agent <agent@geeky-eval.local> 1793345727 +0800
+MOCK CHECK PASS env.home_outside_workspace: /Users/gkhoo-c/.Projects/mxc-c0/mxc-home/posix-home
+MOCK CHECK PASS env.writable.TEMP: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp
+MOCK CHECK PASS env.writable.workspace: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z
+MOCK CHECK PASS env.heredoc: TMPPREFIX=/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/zsh; [heredoc-ok]
+MOCK CHECK PASS env.bg_wait_ceiling: CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0
+MOCK CHECK INFO env.vars: CLAUDE_CONFIG_DIR=/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home; TEMP=/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/tmp; VIRTUAL_ENV=/Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py; XDG_CONFIG_HOME=/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z; CLAUDE_CODE_DISABLE_WINDOWS_SHELL_LAUNCHER=1; GIT_CONFIG_COUNT=1; GIT_CONFIG_VALUE_0=/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z; GIT_AUTHOR_NAME=geeky-eval-agent; LOCALAPPDATA=; USERPROFILE=
+MOCK CHECK INFO env.path: /Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin:/Users/gkhoo-c/.Projects/mxc-c0/pwsh-tool:/Users/gkhoo-c/.Projects/mxc-c0/bin:/usr/local/share/dotnet:/Users/gkhoo-c/.nvm/versions/node/v24.16.0/bin:/Users/gkhoo-c/.local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/opt/homebrew/bin:/usr/local/munki:/Users/gkhoo-c/.claude/plugins/cache/geekhoo-plugins/semantic-design-system/0.2.0/bin
+MOCK CHECK PASS grants.workspace_rw: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z
+MOCK CHECK PASS grants.plugin_scandir.skills: 8 entries: archive, geeky-implement, geeky-plan, geeky-resume, geeky-status, impl-review, plan-review, spec-research
+MOCK CHECK PASS grants.plugin_scandir.agents: 6 entries: code-architect.md, code-explorer.md, code-reviewer.md, geeky-coder.md, geeky-implement-orchestrator.md, geeky-orchestrator.md
+MOCK CHECK INFO grants.plugin_scandir.commands: absent
+MOCK CHECK PASS grants.plugin_read: read 8 SKILL.md files
+MOCK CHECK PASS grants.config_dir_rw: /Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home/projects/-Users-gkhoo-c--Projects-mxc-c0-work-eval-c0-wordstat-20261030T073521Z
+MOCK CHECK PASS grants.settings_readable: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/settings.json
+MOCK CHECK PASS grants.mcp_config_readable: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/mcp.json
+MOCK CHECK PASS grants.temp_write: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755
+MOCK CHECK PASS grants.temp_exec_script: exit 0: tempexec-ok
+MOCK CHECK FAIL grants.temp_write: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755: [Errno 1] Operation not permitted: '/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755/probe-true'
+MOCK CHECK PASS grants.temp_mkdtemp: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-mkdtemp-ouxowjdb
+MOCK CHECK PASS pwsh.found: /Users/gkhoo-c/.Projects/mxc-c0/bin/pwsh
+MOCK CHECK PASS pwsh.exit_0: exit 0 (expected 0)
+MOCK CHECK PASS pwsh.exit_7: exit 7 (expected 7)
+MOCK CHECK PASS pwsh.native_exit_3: exit 3 (expected 3)
+MOCK CHECK PASS pwsh.cmdlet_error: exit 1 (expected 1)
+MOCK CHECK PASS pwsh.profile_stderr: exit 0; stderr: (empty)
+MOCK CHECK INFO pwsh.profile_path: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/powershell/Microsoft.PowerShell_profile.ps1
+MOCK CHECK PASS python.which: /Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python
+MOCK CHECK PASS python.version: Python 3.9.6
+MOCK CHECK PASS python.pytest_version: pytest 8.4.2
+MOCK CHECK FAIL scenario.python.error: PermissionError: [Errno 1] Operation not permitted: '/Users/gkhoo-c/.local/bin'
+MOCK CHECK PASS git.version: git version 2.50.1 (Apple Git-155)
+MOCK CHECK PASS git.identity: geeky-eval-agent <agent@geeky-eval.local> 1793345732 +0800
+MOCK CHECK PASS git.workspace_status: ## main
+MOCK CHECK PASS git.commit_temp: /Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-git-483b307d0deb: 86f37ee806e2acc2ec7726ed59f1aba18d413484 geeky-eval-agent <agent@geeky-eval.local>
+MOCK CHECK PASS git.commit_workspace: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z/.git/mock-git-probe-8a607f03: 25ac620451fda8edf9123771e291949c739d16fb geeky-eval-agent <agent@geeky-eval.local>
+MOCK CHECK PASS gate.validate-planning-folder.py: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS gate.validate-task-schema.py: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS gate.validate-kanban.py: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS gate.check-dod.py: exit 0 (expected 0): DOD_OK: T1
+MOCK CHECK PASS gate.check-commit.py: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS gate.validate-kanban.py.rejects_bad: exit 1 (expected 1): INVALID_KANBAN: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=1, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS gate.validate-planning-folder.ps1: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS gate.validate-task-schema.ps1: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS gate.validate-kanban.ps1: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS gate.check-dod.ps1: exit 0 (expected 0): DOD_OK: T1
+MOCK CHECK PASS gate.check-commit.ps1: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS gate.validate-kanban.ps1.rejects_bad: exit 1 (expected 1): INVALID_KANBAN: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=1, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS mcp.geeky.handshake: geeky_mcp 0.3.0: 6 tools in 0.3s: geeky_validate_planning_folder, geeky_validate_task_schema, geeky_validate_kanban, geeky_check_dod, geeky_check_commit, geeky_check_frozen_artifact
+MOCK CHECK PASS skill.spec-research: SKILL.md present and launched
+MOCK CHECK PASS skill.geeky-plan: SKILL.md present and launched
+MOCK CHECK PASS happy.validate-planning-folder: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS happy.validate-task-schema: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS happy.validate-kanban.plan: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=2, In Progress=0, In Review=0, Blocked=0, Done=0
+MOCK CHECK PASS happy.plan.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.plan.commit: exit 0: 
+MOCK CHECK PASS skill.plan-review: SKILL.md present and launched
+MOCK CHECK PASS happy.plan-review.validate-task-schema.ps1: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS skill.geeky-implement: SKILL.md present and launched
+MOCK CHECK PASS happy.implement.validate-planning-folder: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS happy.validate-kanban.in-progress: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=2, In Review=0, Blocked=0, Done=0
+MOCK CHECK PASS happy.pytest: exit 0: 2 passed in 0.13s
+MOCK CHECK PASS happy.validate-kanban.done: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS happy.check-dod.T1: exit 0 (expected 0): DOD_OK: T1
+MOCK CHECK PASS happy.check-dod.T2: exit 0 (expected 0): DOD_OK: T2
+MOCK CHECK PASS happy.implement.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.implement.commit: exit 0: 
+MOCK CHECK PASS skill.impl-review: SKILL.md present and launched
+MOCK CHECK PASS happy.impl-review.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.impl-review.commit: exit 0: 

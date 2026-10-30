@@ -1,0 +1,136 @@
+{
+  "tokens": {
+    "input": 604712,
+    "cached_input": 530100,
+    "cache_creation": 43010,
+    "output": 25311,
+    "total": 630023,
+    "by_model": {
+      "claude-mock-5-5": {
+        "inputTokens": 1301,
+        "cacheReadInputTokens": 530100,
+        "cacheCreationInputTokens": 43010,
+        "outputTokens": 23010
+      },
+      "claude-mock-haiku": {
+        "inputTokens": 30301,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "outputTokens": 2301
+      }
+    },
+    "cost_usd_estimate": 0.7112
+  },
+  "model_calls": 98,
+  "latency_median_ms": 50,
+  "latency_samples": 85,
+  "max_idle_gap_s": 2,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-30T07:35:39.515000+00:00",
+      "ended_utc": "2026-10-30T07:35:39.894000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-plan",
+      "started_utc": "2026-10-30T07:35:39.894000+00:00",
+      "ended_utc": "2026-10-30T07:35:41.296000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "plan-review",
+      "started_utc": "2026-10-30T07:35:41.296000+00:00",
+      "ended_utc": "2026-10-30T07:35:42.169000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-implement",
+      "started_utc": "2026-10-30T07:35:42.169000+00:00",
+      "ended_utc": "2026-10-30T07:35:45.418000+00:00",
+      "minutes": 0.1
+    },
+    {
+      "name": "impl-review",
+      "started_utc": "2026-10-30T07:35:45.418000+00:00",
+      "ended_utc": "2026-10-30T07:35:46.671000+00:00",
+      "minutes": 0.0
+    }
+  ],
+  "impl_review_rounds": 1,
+  "skill_invocations": {
+    "spec-research": 1,
+    "geeky-plan": 1,
+    "plan-review": 1,
+    "geeky-implement": 1,
+    "impl-review": 1
+  },
+  "tool_calls_main": {
+    "PowerShell": 54,
+    "Write": 11,
+    "Edit": 7,
+    "Skill": 5,
+    "Agent": 4,
+    "Read": 2,
+    "ToolSearch": 1
+  },
+  "tool_calls_subagents": {
+    "Read": 4,
+    "PowerShell": 3,
+    "Write": 3
+  },
+  "subagent_dispatches": {
+    "geeky-orchestration:code-explorer": 1,
+    "geeky-orchestration:code-reviewer": 2,
+    "geeky-orchestration:geeky-coder": 1
+  },
+  "validation_runs": {
+    "main": 3,
+    "sub": 2
+  },
+  "gate_invocations": {
+    "validate-planning-folder": 4,
+    "validate-task-schema": 4,
+    "validate-kanban": 7,
+    "check-dod": 4,
+    "check-commit": 5
+  },
+  "gate_results": {
+    "validate-planning-folder": {
+      "pass": 4,
+      "fail": 0,
+      "unknown": 0,
+      "main": 4,
+      "sub": 0
+    },
+    "validate-task-schema": {
+      "pass": 4,
+      "fail": 0,
+      "unknown": 0,
+      "main": 3,
+      "sub": 1
+    },
+    "validate-kanban": {
+      "pass": 5,
+      "fail": 2,
+      "unknown": 0,
+      "main": 7,
+      "sub": 0
+    },
+    "check-dod": {
+      "pass": 4,
+      "fail": 0,
+      "unknown": 0,
+      "main": 4,
+      "sub": 0
+    },
+    "check-commit": {
+      "pass": 5,
+      "fail": 0,
+      "unknown": 0,
+      "main": 5,
+      "sub": 0
+    }
+  },
+  "duration_api_ms": 3920
+}

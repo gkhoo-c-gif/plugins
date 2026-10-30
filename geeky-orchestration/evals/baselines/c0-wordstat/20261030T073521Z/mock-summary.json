@@ -1,0 +1,476 @@
+{
+  "type": "system",
+  "subtype": "mock_summary",
+  "session_id": "07a30ae5-c669-4653-802d-e020e99390cb",
+  "schema": "geeky-eval.mock-summary/1",
+  "cwd": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z",
+  "scenarios": [
+    "env-probe",
+    "grants",
+    "pwsh",
+    "python",
+    "git",
+    "gates",
+    "mcp",
+    "happy"
+  ],
+  "ok": false,
+  "counts": {
+    "pass": 68,
+    "fail": 2,
+    "warn": 0,
+    "info": 4
+  },
+  "failed": [
+    "grants.temp_write",
+    "scenario.python.error"
+  ],
+  "session_file": "/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home/projects/-Users-gkhoo-c--Projects-mxc-c0-work-eval-c0-wordstat-20261030T073521Z/07a30ae5-c669-4653-802d-e020e99390cb.jsonl",
+  "checks": [
+    {
+      "name": "init.plugin_skills",
+      "status": "pass",
+      "detail": "8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research",
+      "scenario": null
+    },
+    {
+      "name": "env.pwsh",
+      "status": "pass",
+      "detail": "PSVersion=7.6.9 | USER=",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.python",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python: 3.9.6 /Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.pytest",
+      "status": "pass",
+      "detail": "pytest 8.4.2",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.git_identity",
+      "status": "pass",
+      "detail": "geeky-eval-agent <agent@geeky-eval.local> 1793345727 +0800",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.home_outside_workspace",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/posix-home",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.writable.TEMP",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.writable.workspace",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.heredoc",
+      "status": "pass",
+      "detail": "TMPPREFIX=/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/zsh; [heredoc-ok]",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.bg_wait_ceiling",
+      "status": "pass",
+      "detail": "CLAUDE_CODE_PRINT_BG_WAIT_CEILING_MS=0",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.vars",
+      "status": "info",
+      "detail": "CLAUDE_CONFIG_DIR=/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home; TEMP=/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/tmp; VIRTUAL_ENV=/Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py; XDG_CONFIG_HOME=/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z; CLAUDE_CODE_DISABLE_WINDOWS_SHELL_LAUNCHER=1; GIT_CONFIG_COUNT=1; GIT_CONFIG_VALUE_0=/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z; GIT_AUTHOR_NAME=geeky-eval-agent; LOCALAPPDATA=; USERPROFILE=",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "env.path",
+      "status": "info",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin:/Users/gkhoo-c/.Projects/mxc-c0/pwsh-tool:/Users/gkhoo-c/.Projects/mxc-c0/bin:/usr/local/share/dotnet:/Users/gkhoo-c/.nvm/versions/node/v24.16.0/bin:/Users/gkhoo-c/.local/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/usr/local/share/dotnet:~/.dotnet/tools:/opt/homebrew/bin:/usr/local/munki:/Users/gkhoo-c/.claude/plugins/cache/geekhoo-plugins/semantic-design-system/0.2.0/bin",
+      "scenario": "env-probe"
+    },
+    {
+      "name": "grants.workspace_rw",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.plugin_scandir.skills",
+      "status": "pass",
+      "detail": "8 entries: archive, geeky-implement, geeky-plan, geeky-resume, geeky-status, impl-review, plan-review, spec-research",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.plugin_scandir.agents",
+      "status": "pass",
+      "detail": "6 entries: code-architect.md, code-explorer.md, code-reviewer.md, geeky-coder.md, geeky-implement-orchestrator.md, geeky-orchestrator.md",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.plugin_scandir.commands",
+      "status": "info",
+      "detail": "absent",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.plugin_read",
+      "status": "pass",
+      "detail": "read 8 SKILL.md files",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.config_dir_rw",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home/projects/-Users-gkhoo-c--Projects-mxc-c0-work-eval-c0-wordstat-20261030T073521Z",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.settings_readable",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/settings.json",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.mcp_config_readable",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/mcp.json",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.temp_write",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.temp_exec_script",
+      "status": "pass",
+      "detail": "exit 0: tempexec-ok",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.temp_write",
+      "status": "fail",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755: [Errno 1] Operation not permitted: '/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-exec-35755/probe-true'",
+      "scenario": "grants"
+    },
+    {
+      "name": "grants.temp_mkdtemp",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-mkdtemp-ouxowjdb",
+      "scenario": "grants"
+    },
+    {
+      "name": "pwsh.found",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/bin/pwsh",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.exit_0",
+      "status": "pass",
+      "detail": "exit 0 (expected 0)",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.exit_7",
+      "status": "pass",
+      "detail": "exit 7 (expected 7)",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.native_exit_3",
+      "status": "pass",
+      "detail": "exit 3 (expected 3)",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.cmdlet_error",
+      "status": "pass",
+      "detail": "exit 1 (expected 1)",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.profile_stderr",
+      "status": "pass",
+      "detail": "exit 0; stderr: (empty)",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "pwsh.profile_path",
+      "status": "info",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/powershell/Microsoft.PowerShell_profile.ps1\nFalse",
+      "scenario": "pwsh"
+    },
+    {
+      "name": "python.which",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/tools/agent-py/bin/python",
+      "scenario": "python"
+    },
+    {
+      "name": "python.version",
+      "status": "pass",
+      "detail": "Python 3.9.6",
+      "scenario": "python"
+    },
+    {
+      "name": "python.pytest_version",
+      "status": "pass",
+      "detail": "pytest 8.4.2",
+      "scenario": "python"
+    },
+    {
+      "name": "scenario.python.error",
+      "status": "fail",
+      "detail": "PermissionError: [Errno 1] Operation not permitted: '/Users/gkhoo-c/.local/bin'",
+      "scenario": "python"
+    },
+    {
+      "name": "git.version",
+      "status": "pass",
+      "detail": "git version 2.50.1 (Apple Git-155)",
+      "scenario": "git"
+    },
+    {
+      "name": "git.identity",
+      "status": "pass",
+      "detail": "geeky-eval-agent <agent@geeky-eval.local> 1793345732 +0800",
+      "scenario": "git"
+    },
+    {
+      "name": "git.workspace_status",
+      "status": "pass",
+      "detail": "## main",
+      "scenario": "git"
+    },
+    {
+      "name": "git.commit_temp",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T073521Z/tmp/mock-git-483b307d0deb: 86f37ee806e2acc2ec7726ed59f1aba18d413484 geeky-eval-agent <agent@geeky-eval.local>",
+      "scenario": "git"
+    },
+    {
+      "name": "git.commit_workspace",
+      "status": "pass",
+      "detail": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z/.git/mock-git-probe-8a607f03: 25ac620451fda8edf9123771e291949c739d16fb geeky-eval-agent <agent@geeky-eval.local>",
+      "scenario": "git"
+    },
+    {
+      "name": "gate.validate-planning-folder.py",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-task-schema.py",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-kanban.py",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.check-dod.py",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T1",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.check-commit.py",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-kanban.py.rejects_bad",
+      "status": "pass",
+      "detail": "exit 1 (expected 1): INVALID_KANBAN: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=1, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-planning-folder.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-task-schema.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-kanban.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.check-dod.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T1",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.check-commit.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "gates"
+    },
+    {
+      "name": "gate.validate-kanban.ps1.rejects_bad",
+      "status": "pass",
+      "detail": "exit 1 (expected 1): INVALID_KANBAN: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=1, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "gates"
+    },
+    {
+      "name": "mcp.geeky.handshake",
+      "status": "pass",
+      "detail": "geeky_mcp 0.3.0: 6 tools in 0.3s: geeky_validate_planning_folder, geeky_validate_task_schema, geeky_validate_kanban, geeky_check_dod, geeky_check_commit, geeky_check_frozen_artifact",
+      "scenario": "mcp"
+    },
+    {
+      "name": "skill.spec-research",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-plan",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-planning-folder",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-task-schema",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.plan",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=2, In Progress=0, In Review=0, Blocked=0, Done=0",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.plan-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan-review.validate-task-schema.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-implement",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.validate-planning-folder",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.in-progress",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=2, In Review=0, Blocked=0, Done=0",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.pytest",
+      "status": "pass",
+      "detail": "exit 0: 2 passed in 0.13s",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.done",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T1",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T2",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T2",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.impl-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    }
+  ],
+  "summary_file": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T073521Z/.git/mock-summary.json"
+}
