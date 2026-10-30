@@ -178,11 +178,16 @@ $telemetry = Resolve-EvalTelemetry -Harness claude-code -ToolsDir $ToolsDir -Cas
     -Reasoning $Effort -WorkerReasoning $Effort -ReviewerReasoning $Effort `
     -Provider $(if ($Litellm) { 'litellm' } else { 'anthropic' }) -Mock:$MockAgent -Disabled:$NoTelemetry
 $wantOtel = $env:GEEKY_EVAL_OTEL -in '1', 'true'
+$wantThinkingDisplay = $false
 $settings = [ordered]@{ env = @{ MCP_TIMEOUT = '120000' } }
 if ($telemetry) { $settings.hooks = $telemetry.SettingsHooks }
 if ($telemetry -or $wantOtel) {
-    # claude -p otherwise requests display "omitted" thinking, leaving only signatures in the transcript.
+    # showThinkingSummaries only reaches interactive sessions (claude 2.1.314 ios(): the setting is read only when
+    # !isNonInteractive). A claude -p run sends thinking:{type:"adaptive"} with no display, and claude-sonnet-5-5
+    # defaults to display "omitted", so the transcript keeps signatures only. Request summaries with the hidden
+    # --thinking-display flag below; it also marks the session display-explicit so subagents keep it.
     $settings.showThinkingSummaries = $true
+    $wantThinkingDisplay = $true
 }
 $settings | ConvertTo-Json -Depth 8 | Set-Content (Join-Path $cfg 'settings.json')
 
@@ -198,6 +203,7 @@ $disallowed = @(if ($onWindows) { 'Bash' }) + @(if ($Litellm) { 'WebSearch' })
 if ($disallowed) { $claudeArgs += @('--disallowedTools', ($disallowed -join ',')) }
 if ($Model) { $claudeArgs += @('--model', $Model) }
 if ($Effort) { $claudeArgs += @('--effort', $Effort) }
+if ($wantThinkingDisplay) { $claudeArgs += @('--thinking-display', 'summarized') }
 if ($MockAgent) {
     # MXC_CLAUDE_EXE must be an .exe: the agent-py python runs the mock, copied under the read-only
     # config grant so the sandbox can read it (the repo itself is not granted).
