@@ -93,6 +93,9 @@ CRITICAL_DPS = {"dp02", "dp05", "dp09", "dp10", "dp11"}
 PLAN_REVIEW_SUBJECT = "chore(plan): Plan review — align documents, fix sequencing"
 SPEC_SUBJECT = re.compile(r"^docs: author feature specification in \S+$")
 FIX_SUBJECT = re.compile(r"^fix\(spec\): Address \d+ critical review findings from impl-review$")
+# Leading word of an executable Tests/Validation command. "python" takes an optional version suffix
+# (python3, python3.11); a bare python\b cannot match python3 because 3 is a word character.
+EXEC_HEAD = r"(?:python(?:\d+(?:\.\d+)*)?|py|pytest|pwsh|bash|sh|node|npm|uv)"
 FROZEN = ("implementation-plan.md", "feature-specification.md", "draft.md", "references.md")
 
 
@@ -1016,12 +1019,12 @@ class Scorer:
             # a bullet's command is its leading code span; spans later in the prose are commentary
             lead = re.match(r"^\s*(?:[-*]|\d+\.)\s*`([^`]+)`", line)
             for cmd in [lead.group(1)] if lead else [] if re.match(r"^\s*(?:[-*]|\d+\.)\s", line) else re.findall(r"`([^`]+)`", line):
-                if re.match(r"\s*(python|py|pytest|pwsh|bash|sh|node|npm|uv)\b", cmd):
+                if re.match(r"\s*" + EXEC_HEAD + r"\b", cmd):
                     cmds.append(cmd.strip())
             if native and not lead and '`' not in line:
                 plain = re.sub(r'^\s*(?:[-*]|\d+\.)\s+', '', line).strip()
                 if (fenced or re.match(r'^\s*(?:[-*]|\d+\.)\s+', line)) and re.match(
-                        r'^(?:python(?:\d+(?:\.\d+)*)?|py|pytest|pwsh|bash|sh|node|npm|uv)(?:\.exe)?(?:\s|$)', plain):
+                        r'^' + EXEC_HEAD + r'(?:\.exe)?(?:\s|$)', plain):
                     cmds.append(plain)
         return cmds
 

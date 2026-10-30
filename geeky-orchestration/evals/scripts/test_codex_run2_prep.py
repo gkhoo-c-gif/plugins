@@ -55,6 +55,21 @@ def test_empty_codex_validation_is_explicit_error_not_zero_of_zero(tmp_path):
         scorer.rerun_blocks()
 
 
+@pytest.mark.parametrize('harness', ['claude-code', 'codex'])
+def test_versioned_python_commands_are_validation_commands_but_prose_words_are_not(tmp_path, harness):
+    body = ('Tests/Validation Before Next Task:\n'
+            '- `python3 -m pytest tests -q`\n'
+            '- `python3.11 -m wordstat --help` (exit 0)\n'
+            '- `python -m pytest -q`\n'
+            '- `py -3 -m pytest -q`\n'
+            '- `pythonic --help`\n'
+            '- `python3x -V`\n'
+            'Estimate:\nM\n')
+    scorer = scorer_with_task(tmp_path, body, harness)
+    assert scorer.validation_commands('T1') == [
+        'python3 -m pytest tests -q', 'python3.11 -m wordstat --help', 'python -m pytest -q', 'py -3 -m pytest -q']
+
+
 def test_native_lifetimes_flow_from_rollout_to_trace_not_ack(trace_folder):
     folder, rows = trace_folder
     BASE.add_child(folder, rows)
