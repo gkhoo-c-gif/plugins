@@ -103,7 +103,7 @@ int Probe()
     Console.WriteLine($"root enumeration: {(enumeratePaths is { Count: > 0 } ? string.Join(", ", enumeratePaths) : "disabled")}");
     foreach (var dir in request.Filesystem!.ReadonlyPaths) Console.WriteLine($"grant read-only:  {dir}");
     foreach (var dir in request.Filesystem!.ReadwritePaths) Console.WriteLine($"grant read-write: {dir}");
-    foreach (var (name, value) in request.Environment!.Where(e => e.Key is "npm_config_cache" or "UV_CACHE_DIR" or "TEMP"))
+    foreach (var (name, value) in request.Environment!.Where(e => e.Key is "npm_config_cache" or "UV_CACHE_DIR" or "TEMP" or "TMPDIR" or "TMPPREFIX"))
         Console.WriteLine($"env pinned: {name}={value}");
     Console.WriteLine($"env token passthrough: {AuthSource() ?? "none"}");
     foreach (var name in opt.Env.Keys) Console.WriteLine($"env set: {name}");
@@ -192,6 +192,12 @@ ContainerRequest BuildProcessContainerRequest(string command)
     // otherwise write their caches somewhere ungranted. Pin them to the granted folders.
     foreach (var (variable, dir) in caches) environment[variable] = dir;
     ApplyUserEnvironment(environment);
+    // Seatbelt does not make /tmp writable, and zsh keeps here-document, here-string and =(...) temp files in
+    // $TMPPREFIX (default /tmp/zsh), so every heredoc in Claude Code's Bash tool fails with "can't create temp
+    // file for here document". TMPPREFIX is a file-name prefix, not a folder: keep it inside the final TMPDIR
+    // (after --env, so a caller's TMPDIR or TMPPREFIX wins). Bubblewrap gives the workload a private /tmp.
+    if (OperatingSystem.IsMacOS() && !environment.ContainsKey("TMPPREFIX") && environment.TryGetValue("TMPDIR", out var tmpDir))
+        environment["TMPPREFIX"] = Path.Combine(tmpDir, "zsh");
 
     // Outside Windows the native default backend applies (Bubblewrap on Linux, Seatbelt on macOS); Win32k
     // and drive-root enumeration are Windows concepts. Bubblewrap hides /usr/local, /opt and /home unless
