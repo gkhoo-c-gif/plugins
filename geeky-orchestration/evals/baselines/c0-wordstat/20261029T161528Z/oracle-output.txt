@@ -1,0 +1,639 @@
+EEEEEEEEEEEEE                                                            [100%]
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_w1_help ________________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w2_example_text ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_________________ ERROR at setup of test_w3_example_json_top2 __________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w4_default_top_is_three ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________ ERROR at setup of test_w5_ties_by_word_and_top_above_distinct _________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_______ ERROR at setup of test_w6_tokens_lowercase_digits_split_on_other _______
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w7_empty_file _____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w8_bom_and_crlf ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_missing_file ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w9_directory ______________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_invalid_utf8 ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+___________________ ERROR at setup of test_w10_usage_errors ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w11_deterministic_no_cr ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+=========================== short test summary info ============================
+ERROR oracle_wordstat.py::test_w1_help - Failed: ORACLE_TARGET='/Users/gkhoo-...
+ERROR oracle_wordstat.py::test_w2_example_text - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w3_example_json_top2 - Failed: ORACLE_TARGET='...
+ERROR oracle_wordstat.py::test_w4_default_top_is_three - Failed: ORACLE_TARGE...
+ERROR oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Faile...
+ERROR oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - Fa...
+ERROR oracle_wordstat.py::test_w7_empty_file - Failed: ORACLE_TARGET='/Users/...
+ERROR oracle_wordstat.py::test_w8_bom_and_crlf - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_missing_file - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_directory - Failed: ORACLE_TARGET='/Users/g...
+ERROR oracle_wordstat.py::test_w9_invalid_utf8 - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w10_usage_errors - Failed: ORACLE_TARGET='/Use...
+ERROR oracle_wordstat.py::test_w11_deterministic_no_cr - Failed: ORACLE_TARGE...
+13 errors in 0.09s
+
+EEEEEEEEEEEEE                                                            [100%]
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_w1_help ________________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w2_example_text ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_________________ ERROR at setup of test_w3_example_json_top2 __________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w4_default_top_is_three ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________ ERROR at setup of test_w5_ties_by_word_and_top_above_distinct _________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_______ ERROR at setup of test_w6_tokens_lowercase_digits_split_on_other _______
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w7_empty_file _____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w8_bom_and_crlf ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_missing_file ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w9_directory ______________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_invalid_utf8 ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+___________________ ERROR at setup of test_w10_usage_errors ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w11_deterministic_no_cr ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+=========================== short test summary info ============================
+ERROR oracle_wordstat.py::test_w1_help - Failed: ORACLE_TARGET='/Users/gkhoo-...
+ERROR oracle_wordstat.py::test_w2_example_text - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w3_example_json_top2 - Failed: ORACLE_TARGET='...
+ERROR oracle_wordstat.py::test_w4_default_top_is_three - Failed: ORACLE_TARGE...
+ERROR oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Faile...
+ERROR oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - Fa...
+ERROR oracle_wordstat.py::test_w7_empty_file - Failed: ORACLE_TARGET='/Users/...
+ERROR oracle_wordstat.py::test_w8_bom_and_crlf - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_missing_file - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_directory - Failed: ORACLE_TARGET='/Users/g...
+ERROR oracle_wordstat.py::test_w9_invalid_utf8 - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w10_usage_errors - Failed: ORACLE_TARGET='/Use...
+ERROR oracle_wordstat.py::test_w11_deterministic_no_cr - Failed: ORACLE_TARGE...
+13 errors in 0.06s
+
+EEEEEEEEEEEEE                                                            [100%]
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_w1_help ________________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w2_example_text ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_________________ ERROR at setup of test_w3_example_json_top2 __________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w4_default_top_is_three ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________ ERROR at setup of test_w5_ties_by_word_and_top_above_distinct _________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_______ ERROR at setup of test_w6_tokens_lowercase_digits_split_on_other _______
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w7_empty_file _____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w8_bom_and_crlf ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_missing_file ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+_____________________ ERROR at setup of test_w9_directory ______________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+____________________ ERROR at setup of test_w9_invalid_utf8 ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+___________________ ERROR at setup of test_w10_usage_errors ____________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+________________ ERROR at setup of test_w11_deterministic_no_cr ________________
+
+    @pytest.fixture(scope="session")
+    def target() -> Path:
+        raw = os.environ.get("ORACLE_TARGET")
+        if not raw:
+            pytest.fail("ORACLE_TARGET is not set; point it at the contestant repo root")
+        root = Path(raw)
+        if not root.is_dir():
+            pytest.fail(f"ORACLE_TARGET={raw!r} does not exist or is not a directory")
+        if not (root / "wordstat").is_dir():
+>           pytest.fail(f"ORACLE_TARGET={raw!r} has no wordstat/ package at its root")
+E           Failed: ORACLE_TARGET='/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z' has no wordstat/ package at its root
+
+conftest.py:53: Failed
+=========================== short test summary info ============================
+ERROR oracle_wordstat.py::test_w1_help - Failed: ORACLE_TARGET='/Users/gkhoo-...
+ERROR oracle_wordstat.py::test_w2_example_text - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w3_example_json_top2 - Failed: ORACLE_TARGET='...
+ERROR oracle_wordstat.py::test_w4_default_top_is_three - Failed: ORACLE_TARGE...
+ERROR oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Faile...
+ERROR oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - Fa...
+ERROR oracle_wordstat.py::test_w7_empty_file - Failed: ORACLE_TARGET='/Users/...
+ERROR oracle_wordstat.py::test_w8_bom_and_crlf - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_missing_file - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w9_directory - Failed: ORACLE_TARGET='/Users/g...
+ERROR oracle_wordstat.py::test_w9_invalid_utf8 - Failed: ORACLE_TARGET='/User...
+ERROR oracle_wordstat.py::test_w10_usage_errors - Failed: ORACLE_TARGET='/Use...
+ERROR oracle_wordstat.py::test_w11_deterministic_no_cr - Failed: ORACLE_TARGE...
+13 errors in 0.06s
+

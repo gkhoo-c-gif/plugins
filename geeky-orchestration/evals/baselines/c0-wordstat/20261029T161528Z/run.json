@@ -1,0 +1,155 @@
+{
+  "schema": "geeky-eval.baseline/1",
+  "case": "c0-wordstat",
+  "harness": "claude-code",
+  "model": "claude-sonnet-5-5",
+  "reasoning": "default",
+  "workspace": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161528Z",
+  "config_directory": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261029T161528Z",
+  "seed_sha": "3d3ac8f84826b368b548734410592d07051051d2",
+  "plugin_sha": "2ea774b1fa2ea7ff1eac3670ca6fa2e8a7d61d04",
+  "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+  "session_id": "077523fd-4243-49bc-b5a9-a791a3ae77ba",
+  "started_utc": "2026-10-29T16:15:29.535496Z",
+  "ended_utc": "2026-10-29T16:19:22.153471Z",
+  "wall_time_s": 232.59827208297793,
+  "exit_code": 0,
+  "exit_reason": "completed",
+  "is_error": false,
+  "reference_eligible": false,
+  "token_ceiling": 6000000,
+  "token_ceiling_policy": "informational",
+  "analysis_status": "complete",
+  "telemetry": {
+    "enabled": false
+  },
+  "execution": {
+    "schema": "geeky-eval.execution/1",
+    "state": "finalized",
+    "attempt_id": "43f59fdc-d60f-4bce-b081-21900bb0f569",
+    "segment_id": "256779ca-5fc9-4e92-9947-2defd6102edd",
+    "authorization_reference": "owner-macos-mxc-20261030",
+    "allowed_recoveries": 0,
+    "qualification_waiver": null,
+    "initial_deadline_utc": "2026-10-29T17:45:28.5424100Z",
+    "hard_wall_budget_s": 5400,
+    "closeout_reserve_s": 900,
+    "closeout_policy": "advisory-within-hard-wall",
+    "configuration": {
+      "model": "claude-sonnet-5-5",
+      "reasoning": "default",
+      "mock": false,
+      "provider": "litellm",
+      "hard_wall_budget_s": 5400,
+      "closeout_reserve_s": 900,
+      "allowed_recoveries": 0
+    },
+    "configuration_sha256": "8b0ed8e11e87fa7aa8a277996f4722402850f79b1e1dd16d9c5dc04313d26ca2",
+    "invocations": [
+      {
+        "invocation_id": "bf138ea0-c33e-424a-8fe0-d7cd2c1afb79",
+        "kind": "initial",
+        "timeout_s": 5398,
+        "started_utc": "2026-10-29T16:15:29.5487330Z",
+        "ended_utc": "2026-10-29T16:19:22.1462390Z",
+        "exit_code": 0,
+        "outcome": "success"
+      }
+    ],
+    "process_outcome": "success",
+    "capture_status": "captured",
+    "postprocessing": {
+      "seed-oracle": "completed",
+      "native-capture": "completed",
+      "oracle": "completed",
+      "parsing": "completed",
+      "telemetry": "completed",
+      "analysis": "completed"
+    },
+    "active_step": "analysis",
+    "failure": null,
+    "contestant_time_s": 232.59827208297793,
+    "attempt_elapsed_s": 233.6173674579477,
+    "finalization_time_s": 1.6386190840275958,
+    "workflow_acceptance": "not-established",
+    "writer_pid": 68056,
+    "writer_host": "st-gkhoo-c1",
+    "reconciliation_required": false,
+    "step_timeouts_s": {
+      "oracle": null,
+      "claude_host_flush": null,
+      "codex_replay": 900,
+      "sandbox_hook": 600,
+      "telemetry_poll_wait": 120,
+      "telemetry_host_process": null,
+      "telemetry_coverage": null,
+      "analysis": null
+    },
+    "workspace_head": "a23f41a7541bdae2c4ede30de24458d5d5e08659",
+    "workspace_status": [],
+    "artifact_sha256": {
+      "analysis.json": "33206f1d85ba9e4823371a42b5b33962df4a17b8c397a1a5f578b7771f59d517",
+      "notes.md": "eeaee2e7c3b412042d354d8cf85ee328b0ed3c1e2012e9d24562de882c72d7c6",
+      "oracle-output.txt": "42a32b8447cce59b9a0ae5ab2a660fd4dd7a8d5a05cf8758c8e3a99e1a5a5d6b",
+      "session.jsonl": "bae6a58270525f8271f95372c84ecf10d3cb71f7311b6c32c284a3d101caf8da",
+      "solution.bundle": "8c06b731e74986c76c1cba16b6d02b9600c775d7143daab5be66db6b5a5b2387",
+      "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stream.jsonl": "98d91d823b08fd9cff1f3f80988f525b2f51afdf527d8beadf003dfd93deeab6",
+      "derived/analysis.json": "33206f1d85ba9e4823371a42b5b33962df4a17b8c397a1a5f578b7771f59d517",
+      "derived/run.json": "97a788f46450a4c26f8cffd2024a4e36db79a6629a76794e0381dcf9f4c3af1a"
+    }
+  },
+  "harness_version": "2.1.300",
+  "approach": "canonical-prompt",
+  "plugin_modified_during_run": false,
+  "geeky_skills_loaded": 8,
+  "tokens": {
+    "input": 395382,
+    "cached_input": 355033,
+    "cache_creation": 40327,
+    "output": 4435,
+    "total": 399817,
+    "cost_usd_estimate": 0.1807,
+    "reasoning": 979
+  },
+  "model_calls": 11,
+  "latency_median_ms": 4171,
+  "max_idle_gap_s": 85,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-30T00:18:26.114+08:00",
+      "ended_utc": "2026-10-30T00:19:22.01+08:00",
+      "minutes": 0.9
+    }
+  ],
+  "tasks": null,
+  "impl_review_rounds": null,
+  "oracle": {
+    "collected": 13,
+    "passed": 0,
+    "failed": 0,
+    "errors": 13,
+    "skipped": 0,
+    "stable_over_3": true
+  },
+  "loc": {
+    "source_non_test": 0,
+    "test": 0,
+    "files_changed": 1
+  },
+  "commits": 1,
+  "stop_reason": "end_turn",
+  "raw_sha256": {
+    "stream": "98d91d823b08fd9cff1f3f80988f525b2f51afdf527d8beadf003dfd93deeab6",
+    "session": "bae6a58270525f8271f95372c84ecf10d3cb71f7311b6c32c284a3d101caf8da"
+  },
+  "interventions": 0,
+  "resumed_after_refusal": 0,
+  "provider": {
+    "name": "litellm",
+    "base_url": "litellm.corp.stripe.com.certproxy.localhost:7891",
+    "model": "claude-sonnet-5-5"
+  },
+  "over_token_ceiling": false
+}

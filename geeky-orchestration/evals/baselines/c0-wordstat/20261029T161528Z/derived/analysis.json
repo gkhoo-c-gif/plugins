@@ -1,0 +1,45 @@
+{
+  "tokens": {
+    "input": 395382,
+    "cached_input": 355033,
+    "cache_creation": 40327,
+    "output": 4435,
+    "total": 399817,
+    "by_model": {
+      "claude-sonnet-5-5": {
+        "inputTokens": 22,
+        "cacheReadInputTokens": 355033,
+        "cacheCreationInputTokens": 40327,
+        "outputTokens": 4435
+      }
+    },
+    "cost_usd_estimate": 0.1807
+  },
+  "model_calls": 11,
+  "latency_median_ms": 4171,
+  "latency_samples": 11,
+  "max_idle_gap_s": 85,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-29T16:18:26.114000+00:00",
+      "ended_utc": "2026-10-29T16:19:22.010000+00:00",
+      "minutes": 0.9
+    }
+  ],
+  "impl_review_rounds": null,
+  "skill_invocations": {
+    "spec-research": 1
+  },
+  "tool_calls_main": {
+    "Bash": 9,
+    "Skill": 1,
+    "Write": 1
+  },
+  "tool_calls_subagents": {},
+  "subagent_dispatches": {},
+  "validation_runs": {},
+  "gate_invocations": {},
+  "gate_results": {},
+  "duration_api_ms": 64868
+}
