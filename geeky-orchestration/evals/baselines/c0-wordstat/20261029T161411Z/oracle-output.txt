@@ -1,0 +1,924 @@
+.FFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_____________________________ test_w2_example_text _____________________________
+
+run = <function run.<locals>._run at 0x1066d19d0>
+write = <function write.<locals>._write at 0x10670c0d0>
+
+    def test_w2_example_text(run, write):
+        res = run(write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+__________________________ test_w3_example_json_top2 ___________________________
+
+run = <function run.<locals>._run at 0x10670c040>
+write = <function write.<locals>._write at 0x10659c700>
+
+    def test_w3_example_json_top2(run, write):
+        res = run("--json", "--top", "2", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+_________________________ test_w4_default_top_is_three _________________________
+
+run = <function run.<locals>._run at 0x10659c670>
+write = <function write.<locals>._write at 0x10659c790>
+
+    def test_w4_default_top_is_three(run, write):
+        res = run("--json", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n').code
+
+conftest.py:88: AssertionError
+_________________ test_w5_ties_by_word_and_top_above_distinct __________________
+
+run = <function run.<locals>._run at 0x10659c820>
+write = <function write.<locals>._write at 0x10659c550>
+
+    def test_w5_ties_by_word_and_top_above_distinct(run, write):
+        res = run("--top", "10", write("t.txt", "b a c b a c d\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n').code
+
+conftest.py:88: AssertionError
+________________ test_w6_tokens_lowercase_digits_split_on_other ________________
+
+run = <function run.<locals>._run at 0x10659c4c0>
+write = <function write.<locals>._write at 0x10659c310>
+
+    def test_w6_tokens_lowercase_digits_split_on_other(run, write):
+        res = run("--json", "--top", "5", write("t.txt", "R2-D2 r2d2 R2 don't Éclair"))
+>       assert_ok(res)
+
+oracle_wordstat.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+______________________________ test_w7_empty_file ______________________________
+
+run = <function run.<locals>._run at 0x10659c0d0>
+write = <function write.<locals>._write at 0x1065d7160>
+
+    def test_w7_empty_file(run, write):
+        path = write("empty.txt", b"")
+        res = run(path)
+>       assert_ok(res)
+
+oracle_wordstat.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w8_bom_and_crlf _____________________________
+
+run = <function run.<locals>._run at 0x10659c160>
+write = <function write.<locals>._write at 0x10659c310>
+
+    def test_w8_bom_and_crlf(run, write):
+        res = run(write("bom.txt", b"\xef\xbb\xbfone two\r\ntwo\r\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w9_missing_file _____________________________
+
+run = <function run.<locals>._run at 0x10659c280>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-6/test_w9_missing_file0')
+
+    def test_w9_missing_file(run, tmp_path):
+        missing = tmp_path / "nope.txt"
+>       assert_error(run(missing), f"{missing}: cannot read file")
+
+oracle_wordstat.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-6/test_w9_missing_file0/nope.txt: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+______________________________ test_w9_directory _______________________________
+
+run = <function run.<locals>._run at 0x10659c550>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-6/test_w9_directory0')
+
+    def test_w9_directory(run, tmp_path):
+>       assert_error(run(tmp_path), f"{tmp_path}: cannot read file")
+
+oracle_wordstat.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-6/test_w9_directory0: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+_____________________________ test_w9_invalid_utf8 _____________________________
+
+run = <function run.<locals>._run at 0x10659c670>
+write = <function write.<locals>._write at 0x10670c040>
+
+    def test_w9_invalid_utf8(run, write):
+        path = write("bad.txt", b"ok \xff\xfe bad\n")
+>       assert_error(run(path), f"{path}: not valid UTF-8")
+
+oracle_wordstat.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-6/test_w9_invalid_utf80/bad.txt: not valid UTF-8'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+____________________________ test_w10_usage_errors _____________________________
+
+run = <function run.<locals>._run at 0x10659bee0>
+write = <function write.<locals>._write at 0x10659bd30>
+
+    def test_w10_usage_errors(run, write):
+        path = write("sample.txt", SAMPLE)
+        assert_usage(run("--top", "0", path))
+        assert_usage(run("--top", "x", path))
+>       assert_usage(run())
+
+oracle_wordstat.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_usage(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 2, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 2
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:101: AssertionError
+_________________________ test_w11_deterministic_no_cr _________________________
+
+run = <function run.<locals>._run at 0x1065d7040>
+write = <function write.<locals>._write at 0x10659c1f0>
+
+    def test_w11_deterministic_no_cr(run, write):
+        path = write("sample.txt", "x y\r\nx\n")
+        first, second = run(path), run("--json", path)
+>       assert_ok(first)
+
+oracle_wordstat.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+FAILED oracle_wordstat.py::test_w2_example_text - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w3_example_json_top2 - AssertionError: (2, 'u...
+FAILED oracle_wordstat.py::test_w4_default_top_is_three - AssertionError: (2,...
+FAILED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Asse...
+FAILED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - A...
+FAILED oracle_wordstat.py::test_w7_empty_file - AssertionError: (1, 'wordstat...
+FAILED oracle_wordstat.py::test_w8_bom_and_crlf - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_missing_file - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_directory - AssertionError: (1, 'wordstat:...
+FAILED oracle_wordstat.py::test_w9_invalid_utf8 - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w10_usage_errors - AssertionError: (1, 'words...
+FAILED oracle_wordstat.py::test_w11_deterministic_no_cr - AssertionError: (1,...
+12 failed, 1 passed in 0.99s
+
+.FFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_____________________________ test_w2_example_text _____________________________
+
+run = <function run.<locals>._run at 0x1087329d0>
+write = <function write.<locals>._write at 0x10876c0d0>
+
+    def test_w2_example_text(run, write):
+        res = run(write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+__________________________ test_w3_example_json_top2 ___________________________
+
+run = <function run.<locals>._run at 0x10876c040>
+write = <function write.<locals>._write at 0x1085fc700>
+
+    def test_w3_example_json_top2(run, write):
+        res = run("--json", "--top", "2", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+_________________________ test_w4_default_top_is_three _________________________
+
+run = <function run.<locals>._run at 0x1085fc670>
+write = <function write.<locals>._write at 0x1085fc790>
+
+    def test_w4_default_top_is_three(run, write):
+        res = run("--json", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n').code
+
+conftest.py:88: AssertionError
+_________________ test_w5_ties_by_word_and_top_above_distinct __________________
+
+run = <function run.<locals>._run at 0x1085fc820>
+write = <function write.<locals>._write at 0x1085fc550>
+
+    def test_w5_ties_by_word_and_top_above_distinct(run, write):
+        res = run("--top", "10", write("t.txt", "b a c b a c d\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n').code
+
+conftest.py:88: AssertionError
+________________ test_w6_tokens_lowercase_digits_split_on_other ________________
+
+run = <function run.<locals>._run at 0x1085fc4c0>
+write = <function write.<locals>._write at 0x1085fc310>
+
+    def test_w6_tokens_lowercase_digits_split_on_other(run, write):
+        res = run("--json", "--top", "5", write("t.txt", "R2-D2 r2d2 R2 don't Éclair"))
+>       assert_ok(res)
+
+oracle_wordstat.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+______________________________ test_w7_empty_file ______________________________
+
+run = <function run.<locals>._run at 0x1085fc0d0>
+write = <function write.<locals>._write at 0x108637160>
+
+    def test_w7_empty_file(run, write):
+        path = write("empty.txt", b"")
+        res = run(path)
+>       assert_ok(res)
+
+oracle_wordstat.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w8_bom_and_crlf _____________________________
+
+run = <function run.<locals>._run at 0x1085fc160>
+write = <function write.<locals>._write at 0x1085fc310>
+
+    def test_w8_bom_and_crlf(run, write):
+        res = run(write("bom.txt", b"\xef\xbb\xbfone two\r\ntwo\r\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w9_missing_file _____________________________
+
+run = <function run.<locals>._run at 0x1085fc280>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-7/test_w9_missing_file0')
+
+    def test_w9_missing_file(run, tmp_path):
+        missing = tmp_path / "nope.txt"
+>       assert_error(run(missing), f"{missing}: cannot read file")
+
+oracle_wordstat.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-7/test_w9_missing_file0/nope.txt: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+______________________________ test_w9_directory _______________________________
+
+run = <function run.<locals>._run at 0x1085fc550>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-7/test_w9_directory0')
+
+    def test_w9_directory(run, tmp_path):
+>       assert_error(run(tmp_path), f"{tmp_path}: cannot read file")
+
+oracle_wordstat.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-7/test_w9_directory0: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+_____________________________ test_w9_invalid_utf8 _____________________________
+
+run = <function run.<locals>._run at 0x1085fc670>
+write = <function write.<locals>._write at 0x10876c040>
+
+    def test_w9_invalid_utf8(run, write):
+        path = write("bad.txt", b"ok \xff\xfe bad\n")
+>       assert_error(run(path), f"{path}: not valid UTF-8")
+
+oracle_wordstat.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-7/test_w9_invalid_utf80/bad.txt: not valid UTF-8'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+____________________________ test_w10_usage_errors _____________________________
+
+run = <function run.<locals>._run at 0x1085fbee0>
+write = <function write.<locals>._write at 0x1085fbd30>
+
+    def test_w10_usage_errors(run, write):
+        path = write("sample.txt", SAMPLE)
+        assert_usage(run("--top", "0", path))
+        assert_usage(run("--top", "x", path))
+>       assert_usage(run())
+
+oracle_wordstat.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_usage(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 2, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 2
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:101: AssertionError
+_________________________ test_w11_deterministic_no_cr _________________________
+
+run = <function run.<locals>._run at 0x108637040>
+write = <function write.<locals>._write at 0x1085fc1f0>
+
+    def test_w11_deterministic_no_cr(run, write):
+        path = write("sample.txt", "x y\r\nx\n")
+        first, second = run(path), run("--json", path)
+>       assert_ok(first)
+
+oracle_wordstat.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+FAILED oracle_wordstat.py::test_w2_example_text - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w3_example_json_top2 - AssertionError: (2, 'u...
+FAILED oracle_wordstat.py::test_w4_default_top_is_three - AssertionError: (2,...
+FAILED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Asse...
+FAILED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - A...
+FAILED oracle_wordstat.py::test_w7_empty_file - AssertionError: (1, 'wordstat...
+FAILED oracle_wordstat.py::test_w8_bom_and_crlf - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_missing_file - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_directory - AssertionError: (1, 'wordstat:...
+FAILED oracle_wordstat.py::test_w9_invalid_utf8 - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w10_usage_errors - AssertionError: (1, 'words...
+FAILED oracle_wordstat.py::test_w11_deterministic_no_cr - AssertionError: (1,...
+12 failed, 1 passed in 0.96s
+
+.FFFFFFFFFFFF                                                            [100%]
+=================================== FAILURES ===================================
+_____________________________ test_w2_example_text _____________________________
+
+run = <function run.<locals>._run at 0x10a7259d0>
+write = <function write.<locals>._write at 0x10a7600d0>
+
+    def test_w2_example_text(run, write):
+        res = run(write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+__________________________ test_w3_example_json_top2 ___________________________
+
+run = <function run.<locals>._run at 0x10a760040>
+write = <function write.<locals>._write at 0x10a5f0700>
+
+    def test_w3_example_json_top2(run, write):
+        res = run("--json", "--top", "2", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+_________________________ test_w4_default_top_is_three _________________________
+
+run = <function run.<locals>._run at 0x10a5f0670>
+write = <function write.<locals>._write at 0x10a5f0790>
+
+    def test_w4_default_top_is_three(run, write):
+        res = run("--json", write("sample.txt", SAMPLE))
+>       assert_ok(res)
+
+oracle_wordstat.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json\n').code
+
+conftest.py:88: AssertionError
+_________________ test_w5_ties_by_word_and_top_above_distinct __________________
+
+run = <function run.<locals>._run at 0x10a5f0820>
+write = <function write.<locals>._write at 0x10a5f0550>
+
+    def test_w5_ties_by_word_and_top_above_distinct(run, write):
+        res = run("--top", "10", write("t.txt", "b a c b a c d\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --top\n').code
+
+conftest.py:88: AssertionError
+________________ test_w6_tokens_lowercase_digits_split_on_other ________________
+
+run = <function run.<locals>._run at 0x10a5f04c0>
+write = <function write.<locals>._write at 0x10a5f0310>
+
+    def test_w6_tokens_lowercase_digits_split_on_other(run, write):
+        res = run("--json", "--top", "5", write("t.txt", "R2-D2 r2d2 R2 don't Éclair"))
+>       assert_ok(res)
+
+oracle_wordstat.py:39: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (2, 'usage: wordstat [-h] [args ...]
+E         wordstat: error: unrecognized arguments: --json --top
+E         ')
+E       assert 2 == 0
+E        +  where 2 = Result(code=2, raw_out=b'', raw_err=b'usage: wordstat [-h] [args ...]\nwordstat: error: unrecognized arguments: --json --top\n').code
+
+conftest.py:88: AssertionError
+______________________________ test_w7_empty_file ______________________________
+
+run = <function run.<locals>._run at 0x10a5f00d0>
+write = <function write.<locals>._write at 0x10a62b160>
+
+    def test_w7_empty_file(run, write):
+        path = write("empty.txt", b"")
+        res = run(path)
+>       assert_ok(res)
+
+oracle_wordstat.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w8_bom_and_crlf _____________________________
+
+run = <function run.<locals>._run at 0x10a5f0160>
+write = <function write.<locals>._write at 0x10a5f0310>
+
+    def test_w8_bom_and_crlf(run, write):
+        res = run(write("bom.txt", b"\xef\xbb\xbfone two\r\ntwo\r\n"))
+>       assert_ok(res)
+
+oracle_wordstat.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+_____________________________ test_w9_missing_file _____________________________
+
+run = <function run.<locals>._run at 0x10a5f0280>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-8/test_w9_missing_file0')
+
+    def test_w9_missing_file(run, tmp_path):
+        missing = tmp_path / "nope.txt"
+>       assert_error(run(missing), f"{missing}: cannot read file")
+
+oracle_wordstat.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-8/test_w9_missing_file0/nope.txt: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+______________________________ test_w9_directory _______________________________
+
+run = <function run.<locals>._run at 0x10a5f0550>
+tmp_path = PosixPath('/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-8/test_w9_directory0')
+
+    def test_w9_directory(run, tmp_path):
+>       assert_error(run(tmp_path), f"{tmp_path}: cannot read file")
+
+oracle_wordstat.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-8/test_w9_directory0: cannot read file'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+_____________________________ test_w9_invalid_utf8 _____________________________
+
+run = <function run.<locals>._run at 0x10a5f0670>
+write = <function write.<locals>._write at 0x10a760040>
+
+    def test_w9_invalid_utf8(run, write):
+        path = write("bad.txt", b"ok \xff\xfe bad\n")
+>       assert_error(run(path), f"{path}: not valid UTF-8")
+
+oracle_wordstat.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+message = '/private/var/folders/y_/vvzz83hn64sfvy1nt0_vk7kh0000gn/T/pytest-of-gkhoo-c/pytest-8/test_w9_invalid_utf80/bad.txt: not valid UTF-8'
+
+    def assert_error(res: Result, message: str) -> None:
+        """Exact single-line error contract: exit 3, empty stdout, one stderr line."""
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 3, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 3
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:94: AssertionError
+____________________________ test_w10_usage_errors _____________________________
+
+run = <function run.<locals>._run at 0x10a5efee0>
+write = <function write.<locals>._write at 0x10a5efd30>
+
+    def test_w10_usage_errors(run, write):
+        path = write("sample.txt", SAMPLE)
+        assert_usage(run("--top", "0", path))
+        assert_usage(run("--top", "x", path))
+>       assert_usage(run())
+
+oracle_wordstat.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_usage(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 2, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 2
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:101: AssertionError
+_________________________ test_w11_deterministic_no_cr _________________________
+
+run = <function run.<locals>._run at 0x10a62b040>
+write = <function write.<locals>._write at 0x10a5f01f0>
+
+    def test_w11_deterministic_no_cr(run, write):
+        path = write("sample.txt", "x y\r\nx\n")
+        first, second = run(path), run("--json", path)
+>       assert_ok(first)
+
+oracle_wordstat.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+res = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n')
+
+    def assert_ok(res: Result) -> None:
+        assert "Traceback" not in res.err, res.err
+>       assert res.code == 0, (res.code, res.err)
+E       AssertionError: (1, 'wordstat: mock stub, not implemented
+E         ')
+E       assert 1 == 0
+E        +  where 1 = Result(code=1, raw_out=b'', raw_err=b'wordstat: mock stub, not implemented\n').code
+
+conftest.py:88: AssertionError
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED oracle_wordstat.py::test_w1_help
+FAILED oracle_wordstat.py::test_w2_example_text - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w3_example_json_top2 - AssertionError: (2, 'u...
+FAILED oracle_wordstat.py::test_w4_default_top_is_three - AssertionError: (2,...
+FAILED oracle_wordstat.py::test_w5_ties_by_word_and_top_above_distinct - Asse...
+FAILED oracle_wordstat.py::test_w6_tokens_lowercase_digits_split_on_other - A...
+FAILED oracle_wordstat.py::test_w7_empty_file - AssertionError: (1, 'wordstat...
+FAILED oracle_wordstat.py::test_w8_bom_and_crlf - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_missing_file - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w9_directory - AssertionError: (1, 'wordstat:...
+FAILED oracle_wordstat.py::test_w9_invalid_utf8 - AssertionError: (1, 'wordst...
+FAILED oracle_wordstat.py::test_w10_usage_errors - AssertionError: (1, 'words...
+FAILED oracle_wordstat.py::test_w11_deterministic_no_cr - AssertionError: (1,...
+12 failed, 1 passed in 0.91s
+

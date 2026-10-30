@@ -1,0 +1,196 @@
+{
+  "schema": "geeky-eval.baseline/1",
+  "case": "c0-wordstat",
+  "harness": "claude-code",
+  "model": "claude-mock-5-5",
+  "reasoning": "default",
+  "workspace": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261030T035215Z",
+  "config_directory": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261030T035215Z",
+  "seed_sha": "de84cd4e3a9f541b460d21dccd89e4a997f7a539",
+  "plugin_sha": "32db27a65b584bd58e37eb34bd99b6f85529d37e",
+  "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+  "native_otel": {
+    "enabled": true,
+    "channel": "claude-code-otel",
+    "endpoint": "https://langfuse.markefin.com/api/public/otel",
+    "protocol": "http/protobuf",
+    "service_name": "claude-code",
+    "session_attribute": "19316b3f-5242-4f85-b5d6-3d81ebec4f94",
+    "exporters": {
+      "traces": "otlp",
+      "logs": "otlp",
+      "metrics": "otlp"
+    },
+    "variables": [
+      "CLAUDE_CODE_ENABLE_TELEMETRY",
+      "CLAUDE_CODE_ENHANCED_TELEMETRY_BETA",
+      "OTEL_EXPORTER_OTLP_ENDPOINT",
+      "OTEL_EXPORTER_OTLP_PROTOCOL",
+      "OTEL_EXPORTER_OTLP_HEADERS",
+      "OTEL_LOGS_EXPORTER",
+      "OTEL_METRICS_EXPORTER",
+      "OTEL_TRACES_EXPORTER",
+      "OTEL_RESOURCE_ATTRIBUTES",
+      "OTEL_SERVICE_NAME",
+      "LANGFUSE_TRACING_ENVIRONMENT",
+      "OTEL_LOG_USER_PROMPTS",
+      "OTEL_LOG_ASSISTANT_RESPONSES",
+      "OTEL_LOG_TOOL_DETAILS",
+      "OTEL_LOG_TOOL_CONTENT",
+      "CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH",
+      "CLAUDE_CODE_OTEL_FLUSH_TIMEOUT_MS",
+      "CLAUDE_CODE_OTEL_SHUTDOWN_TIMEOUT_MS",
+      "CLAUDE_CODE_OTEL_DIAG_STDERR"
+    ]
+  },
+  "session_id": "19316b3f-5242-4f85-b5d6-3d81ebec4f94",
+  "started_utc": "2026-10-30T03:52:16.5604960Z",
+  "ended_utc": "2026-10-30T03:52:27.5738570Z",
+  "wall_time_s": 11,
+  "exit_code": 0,
+  "exit_reason": "completed",
+  "is_error": false,
+  "reference_eligible": false,
+  "token_ceiling": 6000000,
+  "token_ceiling_policy": "informational",
+  "analysis_status": "not-started",
+  "telemetry": {
+    "enabled": false
+  },
+  "execution": {
+    "schema": "geeky-eval.execution/1",
+    "state": "process-finished",
+    "attempt_id": "9890ab5b-ba4b-4bcc-9dc4-3e16a0e61baa",
+    "segment_id": "fbc7e66e-6cba-43a7-b0ad-6f5a6731104a",
+    "authorization_reference": "",
+    "allowed_recoveries": 0,
+    "qualification_waiver": null,
+    "initial_deadline_utc": "2026-10-30T05:22:15.857599Z",
+    "hard_wall_budget_s": 5400,
+    "closeout_reserve_s": 0,
+    "closeout_policy": "advisory-within-hard-wall",
+    "configuration": {
+      "model": "",
+      "reasoning": "default",
+      "mock": true,
+      "provider": "anthropic",
+      "hard_wall_budget_s": 5400,
+      "closeout_reserve_s": 0,
+      "allowed_recoveries": 0
+    },
+    "configuration_sha256": "6a91d1686ae86b75b640554b83a01f67dc415e1277434fa704c77a44123ca41e",
+    "invocations": [
+      {
+        "invocation_id": "895a726e-499a-4aeb-9d2c-da43fb71a9df",
+        "kind": "initial",
+        "timeout_s": 5399,
+        "started_utc": "2026-10-30T03:52:16.5745430Z",
+        "ended_utc": "2026-10-30T03:52:27.5682660Z",
+        "exit_code": 0,
+        "outcome": "success"
+      }
+    ],
+    "process_outcome": "success",
+    "capture_status": "captured",
+    "postprocessing": {
+      "seed-oracle": "completed",
+      "native-capture": "completed",
+      "oracle": "completed",
+      "parsing": "completed",
+      "telemetry": "completed",
+      "analysis": "in-progress"
+    },
+    "active_step": "analysis",
+    "failure": null,
+    "contestant_time_s": 10.993851416977122,
+    "attempt_elapsed_s": 11.719887541024946,
+    "finalization_time_s": null,
+    "workflow_acceptance": "not-established",
+    "writer_pid": 59683,
+    "writer_host": "st-gkhoo-c1",
+    "reconciliation_required": true,
+    "step_timeouts_s": {
+      "oracle": null,
+      "claude_host_flush": null,
+      "codex_replay": 900,
+      "sandbox_hook": 600,
+      "telemetry_poll_wait": 120,
+      "telemetry_host_process": null,
+      "telemetry_coverage": null,
+      "analysis": null
+    }
+  },
+  "harness_version": "0.0.0-mock",
+  "approach": "mock-agent:happy",
+  "plugin_modified_during_run": false,
+  "geeky_skills_loaded": 8,
+  "tokens": {
+    "input": 661608,
+    "cached_input": 580900,
+    "cache_creation": 48090,
+    "output": 30899,
+    "total": 692507,
+    "cost_usd_estimate": 0.8262,
+    "reasoning": 50
+  },
+  "model_calls": 62,
+  "latency_median_ms": 51,
+  "max_idle_gap_s": 3,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-30T03:52:20.029000+00:00",
+      "ended_utc": "2026-10-30T03:52:20.386000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-plan",
+      "started_utc": "2026-10-30T03:52:20.386000+00:00",
+      "ended_utc": "2026-10-30T03:52:21.815000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "plan-review",
+      "started_utc": "2026-10-30T03:52:21.815000+00:00",
+      "ended_utc": "2026-10-30T03:52:22.802000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-implement",
+      "started_utc": "2026-10-30T03:52:22.802000+00:00",
+      "ended_utc": "2026-10-30T03:52:26.261000+00:00",
+      "minutes": 0.1
+    },
+    {
+      "name": "impl-review",
+      "started_utc": "2026-10-30T03:52:26.261000+00:00",
+      "ended_utc": "2026-10-30T03:52:27.540000+00:00",
+      "minutes": 0.0
+    }
+  ],
+  "tasks": null,
+  "impl_review_rounds": 1,
+  "oracle": {
+    "collected": 13,
+    "passed": 1,
+    "failed": 12,
+    "errors": 0,
+    "skipped": 0,
+    "stable_over_3": true
+  },
+  "loc": {
+    "source_non_test": 12,
+    "test": 7,
+    "files_changed": 14
+  },
+  "commits": 3,
+  "stop_reason": "end_turn",
+  "raw_sha256": {
+    "stream": "1dbff18c1233b542e01c70affaa056429503f15a73d7f6a27b67c893d37b91ba",
+    "session": "51024fca531bba2ef1a689177e7d634a02b2b0132b43c2297cc870ea33ac89f4"
+  },
+  "interventions": 0,
+  "resumed_after_refusal": 0,
+  "provider": null,
+  "over_token_ceiling": false
+}

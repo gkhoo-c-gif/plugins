@@ -1,0 +1,162 @@
+{
+  "schema": "geeky-eval.baseline/1",
+  "case": "c0-wordstat",
+  "harness": "claude-code",
+  "model": "claude-mock-5-5",
+  "reasoning": "default",
+  "workspace": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z",
+  "config_directory": "/Users/gkhoo-c/.Projects/mxc-c0/work/.eval-cfg-20261029T161210Z",
+  "seed_sha": "284e27e56c226237ac19a8d867b3ac0c1bd3769f",
+  "plugin_sha": "68ab14050726bf79d31431ae147195b097ca32a3",
+  "prompt_sha256": "124eba9b416324a052c8e25031f1660200f52a05a74c9a1d9ce13527b270ddde",
+  "session_id": "fde4613f-9b1f-4418-b739-56d4d75a4e38",
+  "started_utc": "2026-10-29T16:12:11.8847200Z",
+  "ended_utc": "2026-10-29T16:12:22.5956890Z",
+  "wall_time_s": 11,
+  "exit_code": 0,
+  "exit_reason": "aborted",
+  "is_error": true,
+  "reference_eligible": false,
+  "token_ceiling": 6000000,
+  "token_ceiling_policy": "informational",
+  "analysis_status": "not-started",
+  "telemetry": {
+    "enabled": false
+  },
+  "execution": {
+    "schema": "geeky-eval.execution/1",
+    "state": "process-finished",
+    "attempt_id": "80486174-a2bb-4daf-9229-0115893214d1",
+    "segment_id": "3604f8b9-6d52-4023-b8be-0b93ef29d67f",
+    "authorization_reference": "",
+    "allowed_recoveries": 0,
+    "qualification_waiver": null,
+    "initial_deadline_utc": "2026-10-29T17:42:11.1159920Z",
+    "hard_wall_budget_s": 5400,
+    "closeout_reserve_s": 0,
+    "closeout_policy": "advisory-within-hard-wall",
+    "configuration": {
+      "model": "",
+      "reasoning": "default",
+      "mock": true,
+      "provider": "anthropic",
+      "hard_wall_budget_s": 5400,
+      "closeout_reserve_s": 0,
+      "allowed_recoveries": 0
+    },
+    "configuration_sha256": "6a91d1686ae86b75b640554b83a01f67dc415e1277434fa704c77a44123ca41e",
+    "invocations": [
+      {
+        "invocation_id": "23a3dd95-742a-4764-bf3f-d13a35d1f73c",
+        "kind": "initial",
+        "timeout_s": 5399,
+        "started_utc": "2026-10-29T16:12:11.8947900Z",
+        "ended_utc": "2026-10-29T16:12:22.5900520Z",
+        "exit_code": 0,
+        "outcome": "success"
+      }
+    ],
+    "process_outcome": "success",
+    "capture_status": "captured",
+    "postprocessing": {
+      "seed-oracle": "completed",
+      "native-capture": "completed",
+      "oracle": "completed",
+      "parsing": "completed",
+      "telemetry": "completed",
+      "analysis": "in-progress"
+    },
+    "active_step": "analysis",
+    "failure": null,
+    "contestant_time_s": 10.695945624960586,
+    "attempt_elapsed_s": 11.483893209020607,
+    "finalization_time_s": null,
+    "workflow_acceptance": "not-established",
+    "writer_pid": 65341,
+    "writer_host": "st-gkhoo-c1",
+    "reconciliation_required": true,
+    "step_timeouts_s": {
+      "oracle": null,
+      "claude_host_flush": null,
+      "codex_replay": 900,
+      "sandbox_hook": 600,
+      "telemetry_poll_wait": 120,
+      "telemetry_host_process": null,
+      "telemetry_coverage": null,
+      "analysis": null
+    }
+  },
+  "harness_version": "0.0.0-mock",
+  "approach": "mock-agent:happy",
+  "plugin_modified_during_run": false,
+  "geeky_skills_loaded": 8,
+  "tokens": {
+    "input": 661608,
+    "cached_input": 580900,
+    "cache_creation": 48090,
+    "output": 30899,
+    "total": 692507,
+    "cost_usd_estimate": 0.8262,
+    "reasoning": 50
+  },
+  "model_calls": 62,
+  "latency_median_ms": 47,
+  "max_idle_gap_s": 3,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-29T16:12:15.399000+00:00",
+      "ended_utc": "2026-10-29T16:12:15.729000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-plan",
+      "started_utc": "2026-10-29T16:12:15.729000+00:00",
+      "ended_utc": "2026-10-29T16:12:17.007000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "plan-review",
+      "started_utc": "2026-10-29T16:12:17.007000+00:00",
+      "ended_utc": "2026-10-29T16:12:18.064000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-implement",
+      "started_utc": "2026-10-29T16:12:18.064000+00:00",
+      "ended_utc": "2026-10-29T16:12:21.417000+00:00",
+      "minutes": 0.1
+    },
+    {
+      "name": "impl-review",
+      "started_utc": "2026-10-29T16:12:21.417000+00:00",
+      "ended_utc": "2026-10-29T16:12:22.551000+00:00",
+      "minutes": 0.0
+    }
+  ],
+  "tasks": null,
+  "impl_review_rounds": 1,
+  "oracle": {
+    "collected": 13,
+    "passed": 0,
+    "failed": 13,
+    "errors": 0,
+    "skipped": 0,
+    "stable_over_3": true
+  },
+  "loc": {
+    "source_non_test": 0,
+    "test": 0,
+    "files_changed": 0
+  },
+  "commits": 0,
+  "stop_reason": "end_turn",
+  "raw_sha256": {
+    "stream": "c0dd00ac074f821838c01f1f5ce4c436cc0af769efc81250ba414e0109ae4fb6",
+    "session": "ffc716197b238d91c314e0706524fdd17a21066c1362be6c06baeabf60eb94a4"
+  },
+  "interventions": 0,
+  "resumed_after_refusal": 0,
+  "provider": null,
+  "over_token_ceiling": false
+}

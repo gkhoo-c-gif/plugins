@@ -1,0 +1,135 @@
+{
+  "tokens": {
+    "input": 661608,
+    "cached_input": 580900,
+    "cache_creation": 48090,
+    "output": 30899,
+    "total": 692507,
+    "by_model": {
+      "claude-mock-5-5": {
+        "inputTokens": 1809,
+        "cacheReadInputTokens": 580900,
+        "cacheCreationInputTokens": 48090,
+        "outputTokens": 28090
+      },
+      "claude-mock-haiku": {
+        "inputTokens": 30809,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "outputTokens": 2809
+      }
+    },
+    "cost_usd_estimate": 0.8262
+  },
+  "model_calls": 59,
+  "latency_median_ms": 46,
+  "latency_samples": 46,
+  "max_idle_gap_s": 1,
+  "stages": [
+    {
+      "name": "spec-research",
+      "started_utc": "2026-10-29T16:11:26.737000+00:00",
+      "ended_utc": "2026-10-29T16:11:27.058000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-plan",
+      "started_utc": "2026-10-29T16:11:27.058000+00:00",
+      "ended_utc": "2026-10-29T16:11:28.385000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "plan-review",
+      "started_utc": "2026-10-29T16:11:28.385000+00:00",
+      "ended_utc": "2026-10-29T16:11:29.574000+00:00",
+      "minutes": 0.0
+    },
+    {
+      "name": "geeky-implement",
+      "started_utc": "2026-10-29T16:11:29.574000+00:00",
+      "ended_utc": "2026-10-29T16:11:32.749000+00:00",
+      "minutes": 0.1
+    },
+    {
+      "name": "impl-review",
+      "started_utc": "2026-10-29T16:11:32.749000+00:00",
+      "ended_utc": "2026-10-29T16:11:35.055000+00:00",
+      "minutes": 0.0
+    }
+  ],
+  "impl_review_rounds": 1,
+  "skill_invocations": {
+    "spec-research": 1,
+    "geeky-plan": 1,
+    "plan-review": 1,
+    "geeky-implement": 1,
+    "impl-review": 1
+  },
+  "tool_calls_main": {
+    "PowerShell": 16,
+    "Write": 11,
+    "Edit": 7,
+    "Skill": 5,
+    "Agent": 4,
+    "Read": 2
+  },
+  "tool_calls_subagents": {
+    "Read": 4,
+    "PowerShell": 3,
+    "Write": 3
+  },
+  "subagent_dispatches": {
+    "geeky-orchestration:code-explorer": 1,
+    "geeky-orchestration:code-reviewer": 2,
+    "geeky-orchestration:geeky-coder": 1
+  },
+  "validation_runs": {
+    "sub": 2,
+    "main": 1
+  },
+  "gate_invocations": {
+    "validate-planning-folder": 2,
+    "validate-task-schema": 2,
+    "validate-kanban": 3,
+    "check-commit": 3,
+    "check-dod": 2
+  },
+  "gate_results": {
+    "validate-planning-folder": {
+      "pass": 0,
+      "fail": 2,
+      "unknown": 0,
+      "main": 2,
+      "sub": 0
+    },
+    "validate-task-schema": {
+      "pass": 0,
+      "fail": 0,
+      "unknown": 2,
+      "main": 1,
+      "sub": 1
+    },
+    "validate-kanban": {
+      "pass": 0,
+      "fail": 3,
+      "unknown": 0,
+      "main": 3,
+      "sub": 0
+    },
+    "check-commit": {
+      "pass": 3,
+      "fail": 0,
+      "unknown": 0,
+      "main": 3,
+      "sub": 0
+    },
+    "check-dod": {
+      "pass": 0,
+      "fail": 2,
+      "unknown": 0,
+      "main": 2,
+      "sub": 0
+    }
+  },
+  "duration_api_ms": 2360
+}

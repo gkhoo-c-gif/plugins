@@ -1,0 +1,22 @@
+MOCK CHECK PASS init.plugin_skills: 8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research
+MOCK CHECK PASS skill.spec-research: SKILL.md present and launched
+MOCK CHECK PASS skill.geeky-plan: SKILL.md present and launched
+MOCK CHECK FAIL happy.validate-planning-folder: exit 1 (expected 0): INVALID_PLANNING_FOLDER: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z/docs/spec-001-feature
+MOCK CHECK FAIL happy.validate-task-schema: exit 1 (expected 0): NO_TASK_FILES: nothing to validate (expected tasks/Tx-*.md)
+MOCK CHECK FAIL happy.validate-kanban.plan: exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z/docs/spec-001-feature/kanban.md not found.
+MOCK CHECK PASS happy.plan.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK FAIL happy.plan.commit: exit 1: On branch main
+MOCK CHECK PASS skill.plan-review: SKILL.md present and launched
+MOCK CHECK FAIL happy.plan-review.validate-task-schema.ps1: exit 1 (expected 0): NO_TASK_FILES: nothing to validate (expected tasks/Tx-*.md)
+MOCK CHECK PASS skill.geeky-implement: SKILL.md present and launched
+MOCK CHECK FAIL happy.implement.validate-planning-folder: exit 1 (expected 0): INVALID_PLANNING_FOLDER: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z/docs/spec-001-feature
+MOCK CHECK FAIL happy.validate-kanban.in-progress: exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z/docs/spec-001-feature/kanban.md not found.
+MOCK CHECK FAIL happy.pytest: exit 5: no tests ran in 0.00s
+MOCK CHECK FAIL happy.validate-kanban.done: exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161210Z/docs/spec-001-feature/kanban.md not found.
+MOCK CHECK FAIL happy.check-dod.T1: exit 1 (expected 0): DOD_INCOMPLETE: T1
+MOCK CHECK FAIL happy.check-dod.T2: exit 1 (expected 0): DOD_INCOMPLETE: T2
+MOCK CHECK PASS happy.implement.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK FAIL happy.implement.commit: exit 1: On branch main
+MOCK CHECK PASS skill.impl-review: SKILL.md present and launched
+MOCK CHECK PASS happy.impl-review.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK FAIL happy.impl-review.commit: exit 1: On branch main

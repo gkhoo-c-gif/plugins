@@ -1,0 +1,168 @@
+{
+  "type": "system",
+  "subtype": "mock_summary",
+  "session_id": "080fe6bd-da35-4bca-8719-7972a4d34418",
+  "schema": "geeky-eval.mock-summary/1",
+  "cwd": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z",
+  "scenarios": [
+    "happy"
+  ],
+  "ok": false,
+  "counts": {
+    "pass": 9,
+    "fail": 13,
+    "warn": 0,
+    "info": 0
+  },
+  "failed": [
+    "happy.validate-planning-folder",
+    "happy.validate-task-schema",
+    "happy.validate-kanban.plan",
+    "happy.plan.commit",
+    "happy.plan-review.validate-task-schema.ps1",
+    "happy.implement.validate-planning-folder",
+    "happy.validate-kanban.in-progress",
+    "happy.pytest",
+    "happy.validate-kanban.done",
+    "happy.check-dod.T1",
+    "happy.check-dod.T2",
+    "happy.implement.commit",
+    "happy.impl-review.commit"
+  ],
+  "session_file": "/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home/projects/-Users-gkhoo-c--Projects-mxc-c0-work-eval-c0-wordstat-20261029T161124Z/080fe6bd-da35-4bca-8719-7972a4d34418.jsonl",
+  "checks": [
+    {
+      "name": "init.plugin_skills",
+      "status": "pass",
+      "detail": "8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research",
+      "scenario": null
+    },
+    {
+      "name": "skill.spec-research",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-plan",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-planning-folder",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): INVALID_PLANNING_FOLDER: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/docs/spec-001-feature",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-task-schema",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): NO_TASK_FILES: nothing to validate (expected tasks/Tx-*.md)",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.plan",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/docs/spec-001-feature/kanban.md not found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.commit",
+      "status": "fail",
+      "detail": "exit 71: dyld[64862]: Library not loaded: @rpath/DVTSystemPrerequisites.framework/Versions/A/DVTSystemPrerequisites\n  Referenced from: <B23DFFEB-2015-3F9E-99B3-591AF74D650B> /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild\n  Reason: tried: '/Applications/Xcode.app/Contents/DVTSystemPrerequisites",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.plan-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan-review.validate-task-schema.ps1",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): NO_TASK_FILES: nothing to validate (expected tasks/Tx-*.md)",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-implement",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.validate-planning-folder",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): INVALID_PLANNING_FOLDER: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/docs/spec-001-feature",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.in-progress",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/docs/spec-001-feature/kanban.md not found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.pytest",
+      "status": "fail",
+      "detail": "exit 5: no tests ran in 0.00s",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.done",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): INVALID_KANBAN: /Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/docs/spec-001-feature/kanban.md not found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T1",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): DOD_INCOMPLETE: T1",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T2",
+      "status": "fail",
+      "detail": "exit 1 (expected 0): DOD_INCOMPLETE: T2",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.commit",
+      "status": "fail",
+      "detail": "exit 71: dyld[64881]: Library not loaded: @rpath/DVTSystemPrerequisites.framework/Versions/A/DVTSystemPrerequisites\n  Referenced from: <B23DFFEB-2015-3F9E-99B3-591AF74D650B> /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild\n  Reason: tried: '/Applications/Xcode.app/Contents/DVTSystemPrerequisites",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.impl-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.commit",
+      "status": "fail",
+      "detail": "exit 71: dyld[64888]: Library not loaded: @rpath/DVTSystemPrerequisites.framework/Versions/A/DVTSystemPrerequisites\n  Referenced from: <B23DFFEB-2015-3F9E-99B3-591AF74D650B> /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild\n  Reason: tried: '/Applications/Xcode.app/Contents/DVTSystemPrerequisites",
+      "scenario": "happy"
+    }
+  ],
+  "summary_file": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161124Z/.git/mock-summary.json"
+}

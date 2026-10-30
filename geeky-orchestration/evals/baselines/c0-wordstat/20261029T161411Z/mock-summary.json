@@ -1,0 +1,154 @@
+{
+  "type": "system",
+  "subtype": "mock_summary",
+  "session_id": "e6f3e7da-1118-4046-89dc-7525b55ec3b7",
+  "schema": "geeky-eval.mock-summary/1",
+  "cwd": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161411Z",
+  "scenarios": [
+    "happy"
+  ],
+  "ok": true,
+  "counts": {
+    "pass": 22,
+    "fail": 0,
+    "warn": 0,
+    "info": 0
+  },
+  "failed": [],
+  "session_file": "/Users/gkhoo-c/.Projects/mxc-c0/mxc-home/home/projects/-Users-gkhoo-c--Projects-mxc-c0-work-eval-c0-wordstat-20261029T161411Z/e6f3e7da-1118-4046-89dc-7525b55ec3b7.jsonl",
+  "checks": [
+    {
+      "name": "init.plugin_skills",
+      "status": "pass",
+      "detail": "8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research",
+      "scenario": null
+    },
+    {
+      "name": "skill.spec-research",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-plan",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-planning-folder",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-task-schema",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.plan",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=2, In Progress=0, In Review=0, Blocked=0, Done=0",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.plan-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.plan-review.validate-task-schema.ps1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.geeky-implement",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.validate-planning-folder",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.in-progress",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=2, In Review=0, Blocked=0, Done=0",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.pytest",
+      "status": "pass",
+      "detail": "exit 0: 2 passed in 0.15s",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.validate-kanban.done",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T1",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T1",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.check-dod.T2",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): DOD_OK: T2",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.implement.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    },
+    {
+      "name": "skill.impl-review",
+      "status": "pass",
+      "detail": "SKILL.md present and launched",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.check-commit",
+      "status": "pass",
+      "detail": "exit 0 (expected 0): OK: commit message valid.",
+      "scenario": "happy"
+    },
+    {
+      "name": "happy.impl-review.commit",
+      "status": "pass",
+      "detail": "exit 0: ",
+      "scenario": "happy"
+    }
+  ],
+  "summary_file": "/Users/gkhoo-c/.Projects/mxc-c0/work/eval-c0-wordstat-20261029T161411Z/.git/mock-summary.json"
+}

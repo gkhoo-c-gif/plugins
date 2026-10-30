@@ -1,0 +1,22 @@
+MOCK CHECK PASS init.plugin_skills: 8 plugin skills: geeky-orchestration:archive, geeky-orchestration:geeky-implement, geeky-orchestration:geeky-plan, geeky-orchestration:geeky-resume, geeky-orchestration:geeky-status, geeky-orchestration:impl-review, geeky-orchestration:plan-review, geeky-orchestration:spec-research
+MOCK CHECK PASS skill.spec-research: SKILL.md present and launched
+MOCK CHECK PASS skill.geeky-plan: SKILL.md present and launched
+MOCK CHECK PASS happy.validate-planning-folder: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS happy.validate-task-schema: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS happy.validate-kanban.plan: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=2, In Progress=0, In Review=0, Blocked=0, Done=0
+MOCK CHECK PASS happy.plan.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.plan.commit: exit 0: 
+MOCK CHECK PASS skill.plan-review: SKILL.md present and launched
+MOCK CHECK PASS happy.plan-review.validate-task-schema.ps1: exit 0 (expected 0): OK: 2 task file(s) checked, 0 failing.
+MOCK CHECK PASS skill.geeky-implement: SKILL.md present and launched
+MOCK CHECK PASS happy.implement.validate-planning-folder: exit 0 (expected 0): OK: planning folder valid. 2 task file(s) found.
+MOCK CHECK PASS happy.validate-kanban.in-progress: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=2, In Review=0, Blocked=0, Done=0
+MOCK CHECK PASS happy.pytest: exit 0: 2 passed in 0.15s
+MOCK CHECK PASS happy.validate-kanban.done: exit 0 (expected 0): OK: 2 task(s) tracked, 2 task file(s). Backlog=0, Ready=0, In Progress=0, In Review=0, Blocked=0, Done=2
+MOCK CHECK PASS happy.check-dod.T1: exit 0 (expected 0): DOD_OK: T1
+MOCK CHECK PASS happy.check-dod.T2: exit 0 (expected 0): DOD_OK: T2
+MOCK CHECK PASS happy.implement.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.implement.commit: exit 0: 
+MOCK CHECK PASS skill.impl-review: SKILL.md present and launched
+MOCK CHECK PASS happy.impl-review.check-commit: exit 0 (expected 0): OK: commit message valid.
+MOCK CHECK PASS happy.impl-review.commit: exit 0: 
