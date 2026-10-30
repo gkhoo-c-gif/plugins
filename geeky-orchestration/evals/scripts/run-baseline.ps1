@@ -177,9 +177,10 @@ $telemetry = Resolve-EvalTelemetry -Harness claude-code -ToolsDir $ToolsDir -Cas
     -ConfigDir $cfg -StateDir (Join-Path $cfg 'langfuse') -Model $Model `
     -Reasoning $Effort -WorkerReasoning $Effort -ReviewerReasoning $Effort `
     -Provider $(if ($Litellm) { 'litellm' } else { 'anthropic' }) -Mock:$MockAgent -Disabled:$NoTelemetry
+$wantOtel = $env:GEEKY_EVAL_OTEL -in '1', 'true'
 $settings = [ordered]@{ env = @{ MCP_TIMEOUT = '120000' } }
-if ($telemetry) {
-    $settings.hooks = $telemetry.SettingsHooks
+if ($telemetry) { $settings.hooks = $telemetry.SettingsHooks }
+if ($telemetry -or $wantOtel) {
     # claude -p otherwise requests display "omitted" thinking, leaving only signatures in the transcript.
     $settings.showThinkingSummaries = $true
 }
@@ -258,17 +259,22 @@ if ($Litellm) {
 # LANGFUSE_PUBLIC_KEY/SECRET_KEY and every value reaches the sandbox by name only, never on a
 # command line. Observes the run; adds nothing the contestant can read.
 $nativeOtel = $null
-if ($env:GEEKY_EVAL_OTEL -in '1', 'true') {
+if ($wantOtel) {
     if (-not $env:LANGFUSE_PUBLIC_KEY -or -not $env:LANGFUSE_SECRET_KEY -or -not $env:OTEL_EXPORTER_OTLP_ENDPOINT) {
         throw 'GEEKY_EVAL_OTEL needs LANGFUSE_PUBLIC_KEY, LANGFUSE_SECRET_KEY and OTEL_EXPORTER_OTLP_ENDPOINT'
     }
     $basic = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("$($env:LANGFUSE_PUBLIC_KEY):$($env:LANGFUSE_SECRET_KEY)"))
-    $env:OTEL_EXPORTER_OTLP_HEADERS = "Authorization=Basic $basic"
+    $env:OTEL_EXPORTER_OTLP_HEADERS = "Authorization=Basic $basic,x-langfuse-ingestion-version=4"
     $runAttributes = "geeky.case=$Case,geeky.stamp=$stamp,geeky.harness=claude-code,langfuse.session.id=$sid"
     $env:OTEL_RESOURCE_ATTRIBUTES = (@($env:OTEL_RESOURCE_ATTRIBUTES, $runAttributes) | Where-Object { $_ }) -join ','
     $otelNames = @('CLAUDE_CODE_ENABLE_TELEMETRY', 'CLAUDE_CODE_ENHANCED_TELEMETRY_BETA', 'OTEL_EXPORTER_OTLP_ENDPOINT',
         'OTEL_EXPORTER_OTLP_PROTOCOL', 'OTEL_EXPORTER_OTLP_HEADERS', 'OTEL_LOGS_EXPORTER', 'OTEL_METRICS_EXPORTER',
-        'OTEL_TRACES_EXPORTER', 'OTEL_RESOURCE_ATTRIBUTES', 'OTEL_SERVICE_NAME', 'LANGFUSE_TRACING_ENVIRONMENT') |
+        'OTEL_TRACES_EXPORTER', 'OTEL_RESOURCE_ATTRIBUTES', 'OTEL_SERVICE_NAME', 'LANGFUSE_TRACING_ENVIRONMENT',
+        # Content and delivery controls (Langfuse keeps trace spans; content in log events is dropped,
+        # which is why the transcript upload below carries the full content).
+        'OTEL_LOG_USER_PROMPTS', 'OTEL_LOG_ASSISTANT_RESPONSES', 'OTEL_LOG_TOOL_DETAILS', 'OTEL_LOG_TOOL_CONTENT',
+        'CLAUDE_CODE_OTEL_CONTENT_MAX_LENGTH', 'CLAUDE_CODE_OTEL_FLUSH_TIMEOUT_MS', 'CLAUDE_CODE_OTEL_SHUTDOWN_TIMEOUT_MS',
+        'CLAUDE_CODE_OTEL_DIAG_STDERR') |
         Where-Object { [Environment]::GetEnvironmentVariable($_) }
     foreach ($name in $otelNames) { $hostArgs += @('--env', $name) }
     $nativeOtel = [ordered]@{ enabled = $true; channel = 'claude-code-otel'; endpoint = $env:OTEL_EXPORTER_OTLP_ENDPOINT
@@ -455,6 +461,44 @@ $analyzed = Get-Content -LiteralPath (Join-Path $analysisOut 'run.json') -Raw | 
 foreach ($key in $analyzed.Keys) { if ($key -ne 'execution') { $record[$key] = $analyzed[$key] } }
 Copy-Item -LiteralPath (Join-Path $analysisOut 'analysis.json') -Destination (Join-Path $out 'analysis.json')
 $record.analysis_status = 'complete'
+
+# Full-content telemetry (GEEKY_EVAL_OTEL): upload the transcript to Langfuse from the host, check
+# that every observation is readable, and, with GEEKY_EVAL_SCORES=1, post session scores. Telemetry
+# never fails the run: problems are recorded under native_otel.transcript_upload.
+if ($nativeOtel) {
+    Set-EvalStep $record $recordPath 'langfuse-upload'
+    $telDir = Join-Path $out 'telemetry'
+    New-Item -ItemType Directory -Force $telDir | Out-Null
+    $uploadRecord = [ordered]@{ ok = $false }
+    try {
+        $node = (Get-Command node -ErrorAction Stop).Source
+        $sessionFile = Join-Path $out 'session.jsonl'
+        if (-not (Test-Path $sessionFile)) { throw 'no session.jsonl to upload' }
+        $platformTag = if ($onWindows) { 'windows-mxc' } elseif ($IsMacOS) { 'macos-mxc' } else { 'linux-mxc' }
+        $uArgs = @('--disable-warning=ExperimentalWarning', (Join-Path $plugin 'evals/telemetry/transcript-otlp.mts'),
+            '--transcript', $sessionFile, '--subagents', (Join-Path $out 'subagents'), '--session-id', $sid)
+        foreach ($tag in @('geeky-eval', $Case, 'claude-code', $platformTag) + @(if ($MockAgent) { 'mock' })) { $uArgs += @('--tag', $tag) }
+        foreach ($kv in @("case=$Case", "stamp=$stamp", 'harness=claude-code', "model=$Model", "plugin_sha=$pluginSha",
+                "reference_eligible=$($record.reference_eligible)", "exit_reason=$($record.exit_reason)")) { $uArgs += @('--meta', $kv) }
+        & $node @uArgs > (Join-Path $telDir 'upload.json') 2> (Join-Path $telDir 'upload.stderr.txt')
+        $upload = Get-Content (Join-Path $telDir 'upload.json') -Raw | ConvertFrom-Json -AsHashtable
+        $uploadRecord = [ordered]@{ ok = ($LASTEXITCODE -eq 0); counts = $upload.counts; trace_ids = $upload.trace_ids }
+        $checker = Join-Path $plugin 'evals/telemetry/langfuse-check.mts'
+        & $node --disable-warning=ExperimentalWarning $checker coverage --upload (Join-Path $telDir 'upload.json') --timeout-s 180 `
+            --out (Join-Path $telDir 'coverage.json') > $null 2> (Join-Path $telDir 'coverage.stderr.txt')
+        $cov = Get-Content (Join-Path $telDir 'coverage.json') -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -AsHashtable
+        $uploadRecord.coverage = [ordered]@{ complete = [bool]$cov.complete; ratio = $cov.ratio; missing = $cov.missing }
+        if ($env:GEEKY_EVAL_SCORES -in '1', 'true') {
+            Write-EvalRecord $record $recordPath   # scores read the finished record
+            & $node --disable-warning=ExperimentalWarning $checker scores --run $recordPath --session-id $sid `
+                --out (Join-Path $telDir 'scores.json') > $null 2> (Join-Path $telDir 'scores.stderr.txt')
+            $sc = Get-Content (Join-Path $telDir 'scores.json') -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -AsHashtable
+            $uploadRecord.scores = [ordered]@{ ok = [bool]$sc.ok; posted = @($sc.scores).Count }
+        } else { $uploadRecord.scores = [ordered]@{ ok = $null; posted = 0; note = 'GEEKY_EVAL_SCORES not set' } }
+    } catch { $uploadRecord.error = "$_" }
+    $record.native_otel.transcript_upload = $uploadRecord
+    $record.execution.postprocessing['langfuse-upload'] = $(if ($uploadRecord.ok -and $uploadRecord.coverage.complete) { 'completed' } else { 'pending-or-incomplete' })
+}
 } catch {
     if ($record.execution.active_step -eq 'capture' -or $record.execution.process_outcome -eq 'not-started') { $finalizationStart = Get-EvalMonotonicSeconds }
     Set-EvalFailure $record $_
