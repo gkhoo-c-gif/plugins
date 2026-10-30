@@ -7,6 +7,12 @@
  *       observation is readable, per trace and per name category ("Tool: *",
  *       "Subagent: *"). Exit 0 = complete, 1 = incomplete after the timeout.
  *
+ *   export --upload upload.json --out observations.json
+ *       Writes the uploaded traces' observations (only those: native OTel spans of the
+ *       same session are left out so tools are not counted twice) in the list shape
+ *       parity-eval.py reads: id, traceId, parentObservationId, type, name, startTime,
+ *       endTime, latency (s), input, output, metadata, usageDetails, model.
+ *
  *   scores --run run.json --session-id SID [--environment ENV] [--dry-run] [--out scores.json]
  *       Posts deterministic, session-level scores derived from the runner's run.json
  *       (oracle results, wall time, tokens, model calls, commits, exit reason,
@@ -84,6 +90,26 @@ export async function coverage(upload: Json, timeoutS: number) {
   }
 }
 
+// --- export --------------------------------------------------------------------------------- //
+
+const EXPORT_FIELDS = ["id", "traceId", "parentObservationId", "type", "name", "startTime", "endTime", "latency", "level",
+  "statusMessage", "input", "output", "metadata", "usageDetails", "costDetails", "model", "providedModelName"];
+
+export async function exportObservations(upload: Json): Promise<Json[]> {
+  const client = api();
+  const all: Json[] = [];
+  for (const traceId of upload.trace_ids ?? []) {
+    let cursor = "";
+    for (let page = 0; page < 50; page++) {
+      const body = await client.get(`/v2/observations?traceId=${traceId}&limit=1000&fields=core,basic,time,io,metadata,model,usage${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ""}`);
+      for (const o of body.data ?? []) all.push(Object.fromEntries(EXPORT_FIELDS.filter((k) => k in o).map((k) => [k, o[k]])));
+      cursor = body.meta?.cursor ?? body.meta?.nextCursor ?? "";
+      if (!cursor) break;
+    }
+  }
+  return all.sort((a, b) => String(a.startTime).localeCompare(String(b.startTime)));
+}
+
 // --- scores --------------------------------------------------------------------------------- //
 
 /** A stable UUID-shaped id, so re-posting a score updates it. */
@@ -137,6 +163,11 @@ async function main() {
     const upload = JSON.parse(readFileSync(resolve(flag(argv, "--upload")), "utf8"));
     report = await coverage(upload, Number(flag(argv, "--timeout-s", "90")));
     process.exitCode = report.complete ? 0 : 1;
+  } else if (command === "export") {
+    const upload = JSON.parse(readFileSync(resolve(flag(argv, "--upload")), "utf8"));
+    const observations = await exportObservations(upload);
+    report = { schema: "geeky-eval.langfuse-observations/1", session_id: upload.session_id, count: observations.length, observations };
+    process.exitCode = observations.length ? 0 : 1;
   } else if (command === "scores") {
     const run = JSON.parse(readFileSync(resolve(flag(argv, "--run")), "utf8"));
     const sessionId = flag(argv, "--session-id") || run.session_id;
@@ -150,7 +181,7 @@ async function main() {
       scores: scores.map((s) => ({ name: s.name, dataType: s.dataType, value: s.value })) };
     process.exitCode = ok ? 0 : 1;
   } else {
-    throw new Error("usage: langfuse-check.mts coverage --upload upload.json | scores --run run.json [--session-id SID]");
+    throw new Error("usage: langfuse-check.mts coverage --upload upload.json | export --upload upload.json --out obs.json | scores --run run.json [--session-id SID]");
   }
   const text = JSON.stringify(report, null, 2) + "\n";
   if (out) writeFileSync(out, text);

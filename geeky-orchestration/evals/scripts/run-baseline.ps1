@@ -488,6 +488,10 @@ if ($nativeOtel) {
             --out (Join-Path $telDir 'coverage.json') > $null 2> (Join-Path $telDir 'coverage.stderr.txt')
         $cov = Get-Content (Join-Path $telDir 'coverage.json') -Raw -ErrorAction SilentlyContinue | ConvertFrom-Json -AsHashtable
         $uploadRecord.coverage = [ordered]@{ complete = [bool]$cov.complete; ratio = $cov.ratio; missing = $cov.missing }
+        # The uploaded traces' observations, in the shape parity-eval.py --observations reads.
+        & $node --disable-warning=ExperimentalWarning $checker export --upload (Join-Path $telDir 'upload.json') `
+            --out (Join-Path $telDir 'observations.json') > $null 2> (Join-Path $telDir 'export.stderr.txt')
+        $uploadRecord.observations_exported = ($LASTEXITCODE -eq 0)
         if ($env:GEEKY_EVAL_SCORES -in '1', 'true') {
             Write-EvalRecord $record $recordPath   # scores read the finished record
             & $node --disable-warning=ExperimentalWarning $checker scores --run $recordPath --session-id $sid `
