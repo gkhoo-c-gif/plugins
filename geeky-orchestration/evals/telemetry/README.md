@@ -208,7 +208,10 @@ embedded scope must itself be a hashed sidecar source.
 
 Score IDs hash a structured tuple of session, scope ID, evaluator version and
 score name. Same-scope reposts are idempotent; other scopes/versions have distinct
-IDs. Metadata includes scope, evaluator, sidecar/parity SHA-256 and prompt/plugin
+IDs. Since `parity-eval/1.3`, `parity.json` records the evaluator that made it
+(`evaluator`). `--evaluator-version` defaults to that value and a different one
+is refused; a `parity.json` without the field (an older evaluator) defaults to
+`parity-eval/1` and cannot be published as `parity-eval/1.3` or later. Metadata includes scope, evaluator, sidecar/parity SHA-256 and prompt/plugin
 fingerprints. An existing scoped ID with different bindings/values blocks writes;
 use a distinct authorized scope/version instead of overwriting its evidence.
 No legacy session/name score IDs are written. The publisher reads

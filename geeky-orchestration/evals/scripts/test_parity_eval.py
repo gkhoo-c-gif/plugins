@@ -400,6 +400,7 @@ def test_round_seven_parity_low_findings():
     assert not pe.literal_kanban_run({'text': note, 'cmd': note})
     here = "@'\npython /p/scripts/validate-kanban.py\n'@ | Set-Content k.ps1"
     assert not pe.literal_kanban_run({'text': here, 'cmd': here})
+    assert pe.EVALUATOR == 'parity-eval/1.3'
 
 
 def test_commit_gate_passes_over_calls():
@@ -450,3 +451,8 @@ def test_a_commit_is_made_by_one_call():
          'return 1; }; git commit -q -m "$1"; }\nc a || exit 1\nc b || exit 1')
     b = {'t': t('2026-11-04T10:00:05.600Z'), 'end': t('2026-11-04T10:00:06.100Z'), 'cmd': q, 'text': q, 'output': 'INVALID_COMMIT_MESSAGE: x'}
     assert evaluation.commit_gate_passes([a, b]) == 1
+
+
+def test_parity_json_records_its_evaluator():
+    import inspect
+    assert "'evaluator': EVALUATOR" in inspect.getsource(pe.Evaluation.evaluate)

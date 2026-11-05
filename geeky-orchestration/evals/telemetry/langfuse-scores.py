@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import urllib.request
 import urllib.parse
@@ -138,7 +139,8 @@ def main(argv=None):
     ap.add_argument('--run', type=Path, required=True)
     ap.add_argument('--parity', type=Path, required=True)
     ap.add_argument('--scope', type=Path, required=True, help='Explicit geeky-eval.inputs/1 sidecar')
-    ap.add_argument('--evaluator-version', default='parity-eval/1')
+    ap.add_argument('--evaluator-version', help="Defaults to the parity.json 'evaluator' (parity-eval/1 for older files); "
+                                                 'a different value is refused')
     ap.add_argument('--output', type=Path, help='Save readback status; pending exits 3')
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--coverage', type=Path, help='Source-audited derived coverage report; original run.json stays unchanged')
@@ -148,6 +150,16 @@ def main(argv=None):
     a = ap.parse_args(argv)
     run = json.loads((a.run / 'run.json').read_text(encoding='utf-8'))
     parity = json.loads(a.parity.read_text(encoding='utf-8'))
+    # Score ids bind the evaluator version and posted scores cannot be corrected: publish under the version that made
+    # parity.json. Older parity.json files carry none; they keep the old default.
+    recorded = parity.get('evaluator')
+    if recorded and a.evaluator_version and a.evaluator_version != recorded:
+        raise ValueError(f'--evaluator-version {a.evaluator_version} does not match parity.json evaluator {recorded}')
+    # parity-eval records its version since parity-eval/1.3: a parity.json without one was made by an older evaluator
+    version = re.fullmatch(r'parity-eval/(\d+)(?:\.(\d+))?', (a.evaluator_version or '').strip())
+    if not recorded and version and (int(version.group(1)), int(version.group(2) or 0)) >= (1, 3):
+        raise ValueError(f'parity.json records no evaluator, so an evaluator older than {a.evaluator_version} made it')
+    a.evaluator_version = a.evaluator_version or recorded or 'parity-eval/1'
     scope = load_scope(a.scope, [a.run / 'run.json'] + ([a.coverage] if a.coverage else []))
     bind_run(scope, run)
     embedded = parity.get('evaluation_scope')

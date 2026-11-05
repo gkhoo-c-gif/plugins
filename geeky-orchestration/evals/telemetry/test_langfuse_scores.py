@@ -129,6 +129,33 @@ def test_publication_requires_explicit_scope_before_client_creation(tmp_path, mo
     assert exc.value.code == 2
 
 
+def test_publication_refuses_an_evaluator_version_parity_json_did_not_record(tmp_path, monkeypatch):
+    # parity-path review, 2026-11-05: published scores cannot be corrected, and their ids bind the evaluator version
+    monkeypatch.setattr(ls, 'Client', lambda _: pytest.fail('client must not be created'))
+    (tmp_path / 'run.json').write_text('{}', encoding='utf-8')
+    (tmp_path / 'parity.json').write_text(json.dumps({'evaluator': 'parity-eval/1.3'}), encoding='utf-8')
+    with pytest.raises(ValueError, match='does not match parity.json evaluator parity-eval/1.3'):
+        ls.main(['--run', str(tmp_path), '--parity', str(tmp_path / 'parity.json'), '--scope', str(tmp_path / 's.json'),
+                 '--evaluator-version', 'parity-eval/1.2', '--dry-run'])
+
+def test_publication_uses_the_recorded_evaluator_and_refuses_new_versions_for_old_files(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(ls, 'Client', lambda _: pytest.fail('client must not be created'))
+    monkeypatch.setattr(ls, 'load_scope', lambda *a: {'missing_sources': [], 'scope_id': 's', 'kind': 'initial', 'input_sha256': 'a' * 64})
+    monkeypatch.setattr(ls, 'bind_run', lambda *a: None)
+    monkeypatch.setattr(ls, 'scores', lambda run, parity: ({'quality': 95.0}, {}))
+    (tmp_path / 'run.json').write_text(json.dumps({'session_id': 'session'}), encoding='utf-8')
+    parity = tmp_path / 'parity.json'
+    args = ['--run', str(tmp_path), '--parity', str(parity), '--scope', str(tmp_path / 's.json'), '--dry-run']
+    parity.write_text(json.dumps({'evaluator': 'parity-eval/1.3', 'harness': 'claude-code'}), encoding='utf-8')
+    assert ls.main(args) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result['metadata']['evaluator'] == 'parity-eval/1.3'
+    assert result['expected'][0]['id'] == ls.score_id('session', 's', 'parity-eval/1.3', 'quality')
+    parity.write_text(json.dumps({'harness': 'claude-code'}), encoding='utf-8')   # made by an older evaluator
+    with pytest.raises(ValueError, match='records no evaluator'):
+        ls.main(args + ['--evaluator-version', 'parity-eval/1.3'])
+    assert ls.main(args) == 0 and json.loads(capsys.readouterr().out)['metadata']['evaluator'] == 'parity-eval/1'
+
 @pytest.mark.parametrize('mode', ['dns', 'zero', 'partial', 'covered'])
 def test_actual_telemetry_recovery_never_launches_contestant(tmp_path, mode):
     # Only this existing function is executed; its Python boundary is a local deny-by-default fake.

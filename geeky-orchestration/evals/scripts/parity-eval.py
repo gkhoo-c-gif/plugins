@@ -29,6 +29,9 @@ from evaluation_scope import bind_run, load_scope, scoped_efficiency
 
 HERE = Path(__file__).resolve().parent
 PLUGIN = HERE.parents[1]
+# The version parity.json records and langfuse-scores.py publishes under (score ids bind it). Raise it with every
+# change that can move a published number.
+EVALUATOR = 'parity-eval/1.3'
 SPEC_SUBJECT = re.compile(r'^docs: author feature specification in \S+$')
 PLAN_REVIEW_SUBJECT = 'chore(plan): Plan review — align documents, fix sequencing'
 # impl-review SKILL.md prescribes "Address N required review findings"; "critical" is the older wording (as score-run)
@@ -459,7 +462,7 @@ class Evaluation:
         consistency = 100 * (0.8 * dpc + 0.2 * oc)
         quality = self.score['dimensions']['quality']['capped']
         composite = (0.35 * quality + 0.35 * adherence + 0.20 * consistency) / 0.90
-        result = {'schema': 'geeky-eval.parity/1', 'harness': self.run.get('harness') or 'claude-code',
+        result = {'schema': 'geeky-eval.parity/1', 'evaluator': EVALUATOR, 'harness': self.run.get('harness') or 'claude-code',
                 'run': self.run.get('run_id') or Path(self.run['workspace']).name,
                 'session_id': (self.run.get('telemetry') or {}).get('session_id') or self.run.get('session_id'),
                 'composite': round(composite, 2), 'quality': round(quality, 2),
