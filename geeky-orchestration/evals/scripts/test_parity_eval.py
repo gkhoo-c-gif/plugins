@@ -238,3 +238,10 @@ def test_forbidden_git_ignores_stash_push_but_catches_real_pushes():
     assert not pe.forbidden_git_command('{"command": "git status\\necho push done"}')
     for cmd in ['git push origin main', 'git -C /r push', 'git commit --amend -m x', 'git commit --no-verify -m x', 'git push --force']:
         assert pe.forbidden_git_command('{"command": "%s"}' % cmd), cmd
+
+
+def test_fix_subject_accepts_the_skill_wording():
+    # skills/impl-review/SKILL.md:134 prescribes "required"; C3 Opus run 20261104T083537Z commit d270a2b
+    assert pe.FIX_SUBJECT.match('fix(spec): Address 1 required review findings from impl-review')
+    assert pe.FIX_SUBJECT.match('fix(spec): Address 2 critical review findings from impl-review')
+    assert not pe.FIX_SUBJECT.match('fix(spec): Address findings')

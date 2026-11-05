@@ -31,7 +31,8 @@ HERE = Path(__file__).resolve().parent
 PLUGIN = HERE.parents[1]
 SPEC_SUBJECT = re.compile(r'^docs: author feature specification in \S+$')
 PLAN_REVIEW_SUBJECT = 'chore(plan): Plan review — align documents, fix sequencing'
-FIX_SUBJECT = re.compile(r'^fix\(spec\): Address \d+ critical review findings from impl-review$')
+# impl-review SKILL.md prescribes "Address N required review findings"; "critical" is the older wording (as score-run)
+FIX_SUBJECT = re.compile(r'^fix\(spec\): Address \d+ (?:required|critical) review findings from impl-review$')
 FROZEN = ('implementation-plan.md', 'feature-specification.md', 'draft.md', 'references.md')
 CRITICAL = {'dp02', 'dp05', 'dp09', 'dp10', 'dp11'}
 SPAWN = {'Tool: Agent', 'Tool: Task', 'spawn_agent'}
