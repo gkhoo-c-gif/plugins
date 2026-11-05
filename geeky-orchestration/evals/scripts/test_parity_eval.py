@@ -361,6 +361,19 @@ def test_run_summary_heading_is_a_markdown_heading():
     assert not pe.RUN_SUMMARY.search('####### Run Summary') and not pe.RUN_SUMMARY.search('##\nRun Summary')
 
 
+def test_commit_gate_counts_implement_stage_commits_only():
+    # parity-path review, 2026-11-05 (C2 20261102T053248Z): the impl-review fix commit 02cc3d0 was counted against
+    # implement-stage gate runs
+    evaluation = pe.Evaluation.__new__(pe.Evaluation)
+    evaluation.bounds = {'geeky-implement': (pe.utc_time('2026-11-02T05:49:44Z'), pe.utc_time('2026-11-02T06:28:22.910Z'))}
+    c = lambda t, files: {'time': pe.utc_time(t), 'files': files}
+    after = [c('2026-11-02T06:28:10Z', ['linkvault/server.py']), c('2026-11-02T06:28:15Z', ['docs/f/handoff.md']),
+             c('2026-11-02T06:47:07Z', ['linkvault/domain.py'])]
+    assert evaluation.implement_code_commits(after) == after[:1]
+    evaluation.bounds = {'geeky-implement': (pe.utc_time('2026-11-02T05:49:44Z'), '9999')}   # impl-review never started
+    assert evaluation.implement_code_commits(after) == [after[0], after[2]]
+
+
 def test_commit_gate_review_round_eight():
     # round-7 review: a shown failure of a quiet helper, whatever stopped the command (or nothing did)
     q = ('c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py --message "$1"; '

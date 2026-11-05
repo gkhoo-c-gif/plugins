@@ -1566,8 +1566,12 @@ class Scorer:
             if c["call"]:
                 by_call.setdefault(c["call"].idx, []).append(c["short"])
         prev, short = -1, []
+        # only geeky-implement runs count (as in parity-eval's a.commit_gate): a gate run of spec-research, geeky-plan
+        # or plan-review covered that stage's own commit, not the first implement commit
+        impl_runs = {i: n for i, n in self.commit_gate_runs.items()
+                     if self.trace.stage_of(self.trace.calls[i]) == "geeky-implement"}
         for idx in sorted(by_call):
-            avail = sum(n for i, n in self.commit_gate_runs.items() if prev < i <= idx)
+            avail = sum(n for i, n in impl_runs.items() if prev < i <= idx)
             if avail < len(by_call[idx]):
                 short.append(f"call {idx}: {avail} check-commit run(s) for {len(by_call[idx])} commit(s)")
             prev = idx

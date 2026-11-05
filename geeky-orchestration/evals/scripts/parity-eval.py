@@ -310,6 +310,14 @@ class Evaluation:
         lo, hi = self.bounds[stage]
         return [e for e in self.events if lo and hi and lo <= self.iso(e['t']) < hi]
 
+    def implement_code_commits(self, after):
+        """Code commits (not docs-only) of `after` made before impl-review starts. The commit gate is a geeky-implement
+        rule (skills/geeky-implement/SKILL.md:55, D79), and its runs are counted during geeky-implement, so an
+        impl-review fix commit is in neither count (C2 20261102T053248Z: its fix commit's gate ran in impl-review).
+        score-run dp12 counts geeky-implement commits and geeky-implement runs too, per commit call."""
+        end = self.bounds['geeky-implement'][1]
+        return [c for c in after if any(not f.startswith('docs/') for f in c['files']) and c['time'] < end]
+
     def commit_gate_passes(self, shells):
         """check-commit passes over the implement-stage shell calls (commit_gate_runs per call, with the commits each
         call made). The call that made the plan-review commit is left out: implement starts in that commit's second, so
@@ -400,7 +408,7 @@ class Evaluation:
         kanban = sum(literal_kanban_run(e) for e in shells) + \
             kanban_helper_runs([e for e in self.events if e['kind'] in ('shell', 'edit')], [e for e in shells if e['kind'] == 'shell'])
         self.check('a.kanban_gate', A, 'pass' if kanban >= len(self.tasks) else 'fail', f'{kanban} validate-kanban runs for {len(self.tasks)} tasks')
-        code_commits = [c for c in after if any(not f.startswith('docs/') for f in c['files'])]
+        code_commits = self.implement_code_commits(after)
         cc = self.commit_gate_passes(shells)
         self.check('a.commit_gate', A, 'pass' if cc >= len(code_commits) else 'fail', f'{cc} check-commit passes for {len(code_commits)} code commits')
         tests = sum(bool(re.search(r'\bpytest\b', e['text'])) for e in impl if e['kind'] == 'shell')

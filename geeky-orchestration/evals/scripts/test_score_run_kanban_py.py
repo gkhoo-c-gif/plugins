@@ -154,8 +154,6 @@ def test_fix_subject_accepts_the_skill_wording():
 C3_OPUS_DEF = """cat > $CLAUDE_CODE_TMPDIR/lanes.py <<'EOF'
 import sys,subprocess
 F='docs/spec-001-feature/'
-
-
 # usage: lanes.py TASK LANE [comment]
 t,lane=sys.argv[1],sys.argv[2]
 k=open(F+'kanban.md').read()
@@ -164,7 +162,6 @@ r=subprocess.run(['python','/p/scripts/validate-kanban.py','--path',F],capture_o
 EOF
 L=$CLAUDE_CODE_TMPDIR/lanes.py
 python $L T5 Ready; python $L T6 Ready; python $L T5 "In Progress"; sed -i '' 's/a/b/' $F/handoff.md"""
-
 
 C3_OPUS_LOOP = ('cd /w; P=/p; F=docs/spec-001-feature; T=$CLAUDE_CODE_TMPDIR; L=$T/lanes.py; R=aebf7ead; '
                 'for t in T5 T6; do python $L $t Done "phase-2 review $R PASS"; '
@@ -231,8 +228,6 @@ def test_helper_moves_skip_mentions_that_are_not_calls():
 
 
 # Round-2 review probes (2026-11-05)
-
-
 LANES_SRC = ("cat > $T/lanes.py <<'EOF'\nimport sys,subprocess\nk=open('docs/f/kanban.md').read()\n"
              "subprocess.run(['python','/p/scripts/validate-kanban.py','--path','docs/f'])\nEOF\n")
 
@@ -259,8 +254,6 @@ def test_run_summary_heading_stays_on_one_line():
 
 
 # Round-3 review probes (2026-11-05)
-
-
 def test_helper_wrapped_in_a_bash_function():
     # C2 20261101T192141Z: lane(){ python3 …/lane.py docs/spec-001-feature "$@"; } then `lane T1 "In Progress"`
     src = ("cat > $T/lane.py <<'EOF'\nk=open('docs/f/kanban.md').read()\nEOF\n"
@@ -282,3 +275,26 @@ def test_run_summary_qualifiers_and_helper_move_mentions():
     assert score.helper_moves(define + 'Write-Host "python $L T5 Done"', h) == []
     assert score.helper_moves(define + 'python $L T5 Done -WhatIf', h) == []
     assert score.helper_moves('function lane { python3 $T/lanes.py "$@"; }\nlane T2 Done', h) == [('T2', 'Done')]
+
+
+def test_commit_gate_counts_implement_stage_runs_and_commits_made():
+    # round-8 review: an earlier stage's gate run covered that stage's own commit, not the first implement commit
+    import datetime as dt, inspect
+    from types import SimpleNamespace as NS
+    sc = score.Scorer.__new__(score.Scorer)
+    calls = [NS(idx=0), NS(idx=1), NS(idx=2)]
+    sc.trace = NS(calls=calls, stage_of=lambda c: {0: 'plan-review', 1: 'geeky-implement', 2: 'geeky-implement'}[c.idx])
+    sc.commit_gate_runs = {0: 1, 2: 1}
+    sc.commits = [{'stage': 'geeky-implement', 'call': calls[1], 'short': 'a'}, {'stage': 'geeky-implement', 'call': calls[2], 'short': 'b'}]
+    status, evidence = sc.commit_gate_before()
+    assert status == 'fail' and 'call 1: 0 check-commit run(s) for 1 commit(s)' in evidence
+    sc.commit_gate_runs = {1: 1, 2: 1}
+    assert sc.commit_gate_before()[0] == 'pass'
+    # commits made by a call, as commit_call maps them; the gate readers get them
+    top, other = NS(idx=5), NS(idx=6)
+    sc.commits = [{'call': top, 'ct': 100.0}, {'call': other, 'ct': 100.5}]
+    ts = lambda s: dt.datetime.fromtimestamp(s)
+    call = NS(ts=ts(99), rts=ts(101), cmd='commit a', top=top)
+    assert sc.commits_made(call) == 1
+    assert sc.commits_made(NS(ts=ts(99), rts=ts(101), cmd='ls', top=top)) == 0
+    assert 'self.commits_made(c)' in inspect.getsource(score.Scorer.derive)
