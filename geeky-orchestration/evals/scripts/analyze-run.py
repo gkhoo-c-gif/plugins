@@ -195,8 +195,10 @@ def _heredoc_spans(text):
     a first scan finds the bodies, and the quotes are then read with those bodies blanked (a quote in a heredoc body
     pairs with nothing outside it), double-quoted strings spanning lines (`git commit -m "…\\n\\nit's done" && cat >
     x <<'EOF'`)."""
-    first = _heredoc_scan(text, None)
-    return _heredoc_scan(text, mask_quotes(blank_comments(_blank_bodies(text, first)), multiline=True)) if first else first
+    first = _heredoc_scan(text, mask_quotes(blank_comments(text)))  # a single-line read first: bodies are not known yet
+    if "<<" not in text:
+        return first
+    return _heredoc_scan(text, mask_quotes(blank_comments(_blank_bodies(text, first)), multiline=True))
 
 
 def _heredoc_scan(text, code):
@@ -316,7 +318,7 @@ _FUNC_DEF = re.compile(r"(?:^|[;&|{])[ \t]*(?P<def>(?i:function)[ \t]+(?P<kw>[A-
                        r"|(?P<po>[A-Za-z_][\w-]*)[ \t]*\(\))\s*\{", re.M)
 # standard output sent away or filtered: any > / >> / &> / *> redirect (to /dev/null, $null or a file; 2> and >&2 are
 # not it: stderr is in the tool result), | Out-Null / Out-File / Set-Content / Select …, | tail / head / grep …, -q
-_QUIET = re.compile(r"(?<!2)[1&*]?>>?(?![ \t]*&[12]\b)|\|[ \t]*(?:Out-Null|Out-File|Set-Content|Add-Content|Select(?:-Object)?|Select-String|"
+_QUIET = re.compile(r"(?<![2>])[1&*]?>>?(?![ \t]*&[12]\b)|\|[ \t]*(?:Out-Null|Out-File|Set-Content|Add-Content|Select(?:-Object)?|Select-String|"
                     r"tail|head|grep|sed|awk|wc|cut|sort|findstr)\b|[ \t](?:-q|--quiet)\b", re.I)
 _FOREACH_PIPE = re.compile(r"\|\s*(?:ForEach-Object|%)\s*\{", re.I)
 _LOOP_WORDS = re.compile(r"\"[^\"]*\"|'[^']*'|\S+")
@@ -432,20 +434,37 @@ def helper_function_gate_runs(cmd):
     return runs, cmd, dict(gating), quiet
 
 
-_GIT_COMMIT = re.compile(r"\bgit\b[^\n;|&]*\bcommit\b")
+# the git commit subcommand (not `git log --grep commit`): options such as -C <dir> or --no-pager may come first
+_GIT_COMMIT = re.compile(r"\bgit(?:\s+-[Cc]\s+\S+|\s+--?[\w.-]+(?:=\S+)?)*\s+commit\b")
 
 
 def commits_only_in_helpers(cmd, gate="check-commit"):
-    """True when cmd runs `gate` only inside helper functions it defines and makes every git commit inside functions
-    that run the gate, so every commit the call made followed a gate run in a helper. For a helper that gates its
-    commit (`check-commit.py $m >/dev/null || { …; return 1; }; git commit …`) that bounds the passes it hid by the
-    commits made. A commit in a function that runs no gate (`wip() { git commit -qm wip; }`) is outside."""
+    """True when cmd runs `gate` only inside helper functions it defines, and every git commit it makes is inside a
+    function that runs the gate, or in a function reached only through one (`checked() { …check-commit…; commit_files
+    "$@"; }` with `commit_files() { git commit …; }`). It checks where the commits are, not their order: a helper that
+    gates its commit (`check-commit.py $m >/dev/null || { …; return 1; }; git commit …`) made one passing gate run per
+    commit, which bounds the passes it hid by the commits made. A commit reached without the gate (`wip() { git
+    commit -qm wip; }` called on its own) is outside."""
     runs, blanked, gating, _ = helper_function_gate_runs(cmd)
-    if not runs[gate] or static_gate_runs(blanked)[gate] or _GIT_COMMIT.search(mask_quotes(mask_heredocs(blank_comments(blanked)))):
+    if not runs[gate] or static_gate_runs(blanked)[gate] or \
+            _GIT_COMMIT.search(mask_quotes(mask_heredocs(blank_comments(blanked)), multiline=True)):
         return False
     shell = mask_quotes(mask_heredocs(blank_comments(cmd)), multiline=True)
-    return not any((m.group("kw") or m.group("po")) not in gating.get(gate, ()) and
-                   _GIT_COMMIT.search(shell[m.end():_block(shell, m.end() - 1) - 1]) for m in _FUNC_DEF.finditer(shell))
+    rest = mask_quotes(mask_heredocs(blank_comments(blanked)), multiline=True)
+    gated = gating.get(gate, set())
+    bodies = {}
+    for m in _FUNC_DEF.finditer(shell):  # the last definition of each name counts
+        bodies[m.group("kw") or m.group("po")] = shell[m.end():_block(shell, m.end() - 1) - 1]
+    called = lambda name, text: re.search(_CALL_PREFIX + r"%s(?![\w:.\\/()=-])" % re.escape(name), text, re.M)
+    # functions reached without passing through a gating function: called at top level, or from such a function
+    reached, todo = set(), [n for n in bodies if n not in gated and called(n, rest)]
+    while todo:
+        n = todo.pop()
+        if n in reached:
+            continue
+        reached.add(n)
+        todo += [o for o in bodies if o not in gated and o not in reached and called(o, bodies[n])]
+    return not any(_GIT_COMMIT.search(bodies[n]) for n in reached)
 
 
 def runs_gate(source, gate):
@@ -503,7 +522,8 @@ def gating_helper_scripts(raw):
     script that touches kanban.md (`cat > $T/lanes.py <<'EOF'`, C3 Opus run 20261104T083537Z). Shared by score-run
     (kanban_gating) and parity-eval (a.kanban_gate). Lower-case file names."""
     text = raw.replace("`r", "").replace("`n", "\n")
-    names = {m.group(3).lower() for m in _PS_HERESTRING_SCRIPT.finditer(text) if "validate-kanban" in m.group(2)}
+    names = {m.group(3).lower() for m in _PS_HERESTRING_SCRIPT.finditer(text) if "validate-kanban" in m.group(2)} \
+        if re.search(r"\|\s*(?:Set-Content|Out-File)\b", text, re.I) else set()
     names |= {n for n, src in heredoc_scripts(raw) if "kanban.md" in src and runs_gate(src, "validate-kanban")}
     return names
 
@@ -621,8 +641,9 @@ def gate_outcomes(name, inp, result, commits=None):
         # `a || b`, an `if` not taken) never ran. Literal calls and helpers that send the output away may be hidden.
         loud = fn[gate] - quiet[gate] if seen else 0
         hidden = max(0, static[gate] - max(len(seen), loud))
-        # A shown commit-gate failure from helpers that gate every commit of the call: which calls ran is not in the
-        # output, but each passing one made a commit, so the hidden runs are the call's commits less the shown passes
+        # A shown commit-gate failure, when every commit of the call is inside a function that runs the gate: which
+        # calls ran is not in the output, but each passing one made a commit, so the hidden runs are at most the
+        # call's commits less the shown passes
         # (C3 Opus 20261104T083537Z: the first of four `commit … || exit 1` failed and nothing was committed).
         if gate == "check-commit" and commits is not None and False in seen and commits_only_in_helpers(cmd):
             hidden = min(hidden, max(0, commits - sum(seen)))

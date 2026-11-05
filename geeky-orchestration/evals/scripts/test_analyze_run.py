@@ -252,3 +252,17 @@ def test_long_powershell_list_without_a_pipe_is_fast():
     AR.helper_function_gate_runs(cmd)
     AR.static_gate_runs(cmd)
     assert time.time() - t0 < 3
+
+
+def test_round_nine_low_findings():
+    # an earlier quoted or commented `<<EOF` with the same delimiter does not hide the real heredoc
+    helper = ("cat > $T/lanes.py <<'EOF'\nimport subprocess\nk=open('docs/f/kanban.md').read()\n"
+              "subprocess.run(['python','/p/scripts/validate-kanban.py','--path','docs/f'])\nEOF\npython $T/lanes.py T1 Done")
+    for before in ("# write the helper with cat <<'EOF'\n", 'echo "writing lanes.py via <<EOF"\n', 'git commit -qm "docs: note cat <<EOF usage"\n'):
+        assert [n for n, _ in AR.heredoc_scripts(before + helper)] == ['lanes.py'], before
+    # stderr appended to a file does not hide stdout
+    _, _, _, q = AR.helper_function_gate_runs('c() { python3 /p/scripts/check-commit.py --message "$1" 2>>err.log; git commit -q -m "$1"; }\nc a')
+    assert q['check-commit'] == 0
+    # nested definitions: a helper defined on its own lines inside another counts once per outer call
+    nested = 'outer() {\n  inner() {\n    python check-commit.py $1\n  }\n  inner $1\n}\nouter a\nouter b'
+    assert AR.static_gate_runs(nested)['check-commit'] == 2

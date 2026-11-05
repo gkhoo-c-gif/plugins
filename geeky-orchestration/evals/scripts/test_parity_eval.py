@@ -456,3 +456,25 @@ def test_a_commit_is_made_by_one_call():
 def test_parity_json_records_its_evaluator():
     import inspect
     assert "'evaluator': EVALUATOR" in inspect.getsource(pe.Evaluation.evaluate)
+
+
+def test_commit_gate_review_round_ten():
+    # round-9 review: a commit made through a function that only the gating helper calls is gated
+    deleg = ('commit_files() { local f="$1"; shift; git add -- "$@" && git commit -q -F "$f"; }\n'
+             'checked() { python3 /p/scripts/check-commit.py --message "$(cat "$1")" >/dev/null || '
+             '{ python3 /p/scripts/check-commit.py --message "$(cat "$1")"; return 1; }; commit_files "$@"; }\n'
+             'checked m0.txt a\nchecked m1.txt b\nchecked m2.txt c')
+    assert pe.AR.commits_only_in_helpers(deleg)
+    assert pe.commit_gate_runs({'text': deleg, 'output': 'INVALID_COMMIT_MESSAGE: x'}, commits=2) == 2
+    ps = ('function Do-Commit($m) { git commit -q -m $m }\nfunction C($m) { python /p/scripts/check-commit.py $m *> $null; '
+          'if ($LASTEXITCODE) { python /p/scripts/check-commit.py $m; return }; Do-Commit $m }\nC a\nC b')
+    assert pe.AR.commits_only_in_helpers(ps)
+    # a commit function called on its own is outside; a git read command naming "commit" is no commit
+    assert not pe.AR.commits_only_in_helpers(deleg + '\ncommit_files m3.txt d')
+    show = 'show() { git log -1 --grep commit; }\n'
+    assert pe.AR.commits_only_in_helpers(show + deleg + '\nshow')
+    # a loud helper's own shown failure is not taken off the quiet commit helper's passes
+    loud = ('vc() { python3 /p/scripts/check-commit.py --message "$1"; }\n'
+            'c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py '
+            '--message "$1"; return 1; }; git commit -q -m "$1"; }\nvc "x"\nc "feat(cli): add list" && c "feat(cli): add show"')
+    assert pe.commit_gate_runs({'text': loud, 'output': 'INVALID_COMMIT_MESSAGE: subject exceeds 72 chars'}, commits=2) == 2

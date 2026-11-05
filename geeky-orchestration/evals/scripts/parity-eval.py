@@ -201,14 +201,15 @@ def commit_gate_runs(event, commits=0):
     # whose output shows no verdict keeps the established one-call fallback (score-run counts each literal call). Only
     # passes count: a failed gate does not cover the commit made after it, so a call that shows only failures counts
     # none. When a gate failure is shown, which helper calls passed is not in the output. The hidden passes are then
-    # at most the helper calls less the shown failures, and, when every gate run and commit of the call is inside
-    # functions that run the gate, at most the commits the call made (a helper that commits despite its gate would
-    # otherwise turn that commit into a pass; stored C1 csvledger 20261020T155628Z). Otherwise none are credited, and
-    # hidden passes of literal gate calls are not credited once any verdict is shown (a failure that is itself hidden
-    # cannot be seen). score-run's gate_outcomes bounds its hidden runs by the same commits, less the shown passes; it
-    # counts runs, failures too, and compares them with the commits of each call. Shown and hidden passes are not
-    # added: a helper that filters its output (`| tail -1`) may both show a pass and count as hiding it, so the larger
-    # of the two is credited.
+    # at most the quiet helper calls less the shown failures that the helpers printing their verdict cannot account
+    # for (a helper that commits despite its failed gate would otherwise turn that commit into a pass; stored C1
+    # csvledger 20261020T155628Z), and, when every commit of the call is inside a function that runs the gate, at
+    # most the commits the call made. Otherwise none are credited, and hidden passes of literal gate calls are not
+    # credited once any verdict is shown (a failure that is itself hidden cannot be seen either). score-run's
+    # gate_outcomes bounds its hidden runs by the same commits less the shown passes; it counts runs, failures too,
+    # and compares them with the commits of each call. Shown and hidden passes are not added: a helper that filters
+    # its output (`| tail -1`) may both show a pass and count as hiding it, so the larger of the two is credited.
+    # MCP check_commit tool calls are not counted here (score-run's gate_outcomes counts them).
     out = event.get('output', '')
     seen = AR.gate_verdicts(out, 'check-commit')
     passes, fails = sum(seen), len(seen) - sum(seen)
@@ -216,7 +217,8 @@ def commit_gate_runs(event, commits=0):
     runs, _, _, quiet = AR.helper_function_gate_runs(cmd)
     helper = quiet['check-commit'] if seen else runs['check-commit']
     if fails:
-        helper = min(max(0, helper - fails), commits if AR.commits_only_in_helpers(cmd) else 0)
+        loud = runs['check-commit'] - quiet['check-commit']
+        helper = min(max(0, helper - max(0, fails - loud)), commits if AR.commits_only_in_helpers(cmd) else 0)
     return max(passes, helper) if seen else max(1, helper)
 
 
@@ -317,7 +319,8 @@ class Evaluation:
         """Code commits (not docs-only) of `after` made before impl-review starts. The commit gate is a geeky-implement
         rule (skills/geeky-implement/SKILL.md:55, D79), and its runs are counted during geeky-implement, so an
         impl-review fix commit is in neither count (C2 20261102T053248Z: its fix commit's gate ran in impl-review).
-        score-run dp12 counts geeky-implement commits and geeky-implement runs too, per commit call."""
+        score-run dp12 counts geeky-implement runs too, per commit call, against every geeky-implement commit (docs
+        commits included); here only code commits are counted, as before."""
         end = self.bounds['geeky-implement'][1]
         return [c for c in after if any(not f.startswith('docs/') for f in c['files']) and c['time'] < end]
 
@@ -326,7 +329,8 @@ class Evaluation:
         call made). The call that made the plan-review commit is left out: implement starts in that commit's second, so
         the call can fall inside the window, but its gate run covered the plan-review commit (C3 GPT 11:11:43).
         A commit is made by at most one call: the first shell call naming `commit` whose start-to-end seconds hold the
-        commit time (docs commits too), as score-run's commit_call maps a commit to the first call within 1.5 s."""
+        commit time (docs commits too). score-run's commit_maker uses the same rule over all calls, and falls back to a
+        call within 1.5 s; here only implement-stage shell calls are candidates and there is no fallback."""
         def window(e):  # commit times have whole seconds
             return e['t'][:19], (e.get('end') or e['t'])[:19]
         owner = {}
