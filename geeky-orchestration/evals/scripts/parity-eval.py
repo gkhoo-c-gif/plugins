@@ -63,6 +63,16 @@ def _coverage_module():
 COV = _coverage_module()
 
 
+def _analyze_module():
+    spec = importlib.util.spec_from_file_location('analyze_run', HERE / 'analyze-run.py')
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+AR = _analyze_module()  # shared shell-reading helpers (gate runs, heredoc and quote masking), as score-run uses
+
+
 def git(ws, *args):
     return subprocess.run(['git', '-C', str(ws), *args], capture_output=True, text=True, encoding='utf-8').stdout
 
@@ -129,8 +139,11 @@ def events(observations):
             paths = [raw['file_path']]
         elif kind in ('shell', 'edit'):
             paths = [p for m in WRITES.finditer(body) for p in m.groups() if p]
+        # the shell command itself, for the shell readers (body is the input as text: JSON quoting wraps the command)
+        cmd = next((raw[k] for k in ('command', 'cmd') if isinstance(raw, dict) and isinstance(raw.get(k), str)), body)  # Claude, Codex
         out.append({'t': utc_time(o['startTime']) if o.get('startTime') else '', 'name': name, 'kind': kind, 'thread': thread(o),
-                    'role': role, 'text': body, 'paths': paths, 'output': COV.text(o.get('output'))})
+                    'end': utc_time(o['endTime']) if o.get('endTime') else '',
+                    'role': role, 'text': body, 'cmd': cmd, 'paths': paths, 'output': COV.text(o.get('output'))})
     return sorted(out, key=lambda e: e['t'])
 
 
@@ -150,13 +163,58 @@ def latency_median_ms(observations):
     return round(statistics.median(values)) if values else None
 
 
-def commit_gate_runs(event):
-    if 'check-commit' not in event['text']:
+def literal_kanban_run(event):
+    """True when a call runs validate-kanban by naming it, HEAD's literal test, except when every mention in the
+    command is inside a source the call writes to a file (a heredoc lane helper, a PowerShell here-string, a note
+    appended to a .md): the moves that helper makes are counted by kanban_helper_runs."""
+    cmd = event.get('cmd', event['text'])
+    return 'validate-kanban' in event['text'] and ('validate-kanban' not in cmd or 'validate-kanban' in AR.mask_written_sources(cmd))
+
+
+def kanban_helper_runs(defs, calls):
+    """validate-kanban runs made inside a lane helper the orchestrator wrote and whose own source runs the gate, so each
+    lane move it makes runs the gate. Helpers are read by analyze-run's gating_helper_scripts: a bash heredoc script
+    that touches kanban.md (C3 Opus run 20261104T083537Z, `cat > $T/lanes.py <<'EOF'`) or a PowerShell here-string
+    piped into Set-Content / Out-File; and here, a .ps1 written with the Write tool whose content touches kanban.md
+    and runs validate-kanban (score-run registers that one only from a main-thread call that writes kanban.md). The
+    moves are read by analyze-run's helper_moves, the same reader score-run uses."""
+    helpers = {name for e in defs for name in AR.gating_helper_scripts(e.get('cmd', e['text']))}
+    for e in defs:  # a .ps1 helper written with the Write tool whose content touches kanban.md and runs validate-kanban (as score-run)
+        if e.get('kind') == 'edit' and str(e.get('name', '')).endswith('Write') and 'validate-kanban' in e['text'] and 'kanban.md' in e['text']:
+            helpers |= {p.replace('\\', '/').rsplit('/', 1)[-1].lower() for p in e.get('paths', []) if p.lower().endswith('.ps1')}
+    return sum(len(AR.helper_moves(e.get('cmd', e['text']), helpers)) for e in calls) if helpers else 0
+
+
+def commit_gate_runs(event, commits=0):
+    """check-commit passes in one shell call; commits is the number of commits made while the call ran."""
+    text = event['text']
+    if 'check-commit' not in text:
         return 0
-    # One captured shell call may invoke a checked commit helper several times.
-    # Preserve the established one-call fallback, but count each recorded PASS.
-    passes = re.findall(r'^OK: commit message valid\.\s*$', event.get('output', ''), re.M)
-    return max(1, len(passes))
+    # One captured shell call may invoke a checked commit helper several times. Count each recorded PASS (verdict lines
+    # read as analyze-run reads them), or each call of a helper function that runs the gate, counted as analyze-run
+    # counts helper functions. A helper that sends the gate's output away (C3 Opus run 20261104T083537Z:
+    # `check-commit.py $m >/dev/null || …`) counts by its calls. A helper that prints the verdict counts by its calls
+    # only when no verdict is shown at all (the output is missing); otherwise its shown verdicts are its runs. A call
+    # whose output shows no verdict keeps the established one-call fallback (score-run counts each literal call). Only
+    # passes count: a failed gate does not cover the commit made after it, so a call that shows only failures counts
+    # none. When a gate failure is shown, which helper calls passed is not in the output. The hidden passes are then
+    # at most the helper calls less the shown failures, and, when every gate run and commit of the call is inside
+    # functions that run the gate, at most the commits the call made (a helper that commits despite its gate would
+    # otherwise turn that commit into a pass; stored C1 csvledger 20261020T155628Z). Otherwise none are credited, and
+    # hidden passes of literal gate calls are not credited once any verdict is shown (a failure that is itself hidden
+    # cannot be seen). score-run's gate_outcomes bounds its hidden runs by the same commits, less the shown passes; it
+    # counts runs, failures too, and compares them with the commits of each call. Shown and hidden passes are not
+    # added: a helper that filters its output (`| tail -1`) may both show a pass and count as hiding it, so the larger
+    # of the two is credited.
+    out = event.get('output', '')
+    seen = AR.gate_verdicts(out, 'check-commit')
+    passes, fails = sum(seen), len(seen) - sum(seen)
+    cmd = event.get('cmd', text)
+    runs, _, _, quiet = AR.helper_function_gate_runs(cmd)
+    helper = quiet['check-commit'] if seen else runs['check-commit']
+    if fails:
+        helper = min(max(0, helper - fails), commits if AR.commits_only_in_helpers(cmd) else 0)
+    return max(passes, helper) if seen else max(1, helper)
 
 
 _GIT = r'\bgit(?:\s+-[Cc]\s+\S+|\s+--[\w.-]+(?:=\S+)?)*\s+'
@@ -252,6 +310,28 @@ class Evaluation:
         lo, hi = self.bounds[stage]
         return [e for e in self.events if lo and hi and lo <= self.iso(e['t']) < hi]
 
+    def commit_gate_passes(self, shells):
+        """check-commit passes over the implement-stage shell calls (commit_gate_runs per call, with the commits each
+        call made). The call that made the plan-review commit is left out: implement starts in that commit's second, so
+        the call can fall inside the window, but its gate run covered the plan-review commit (C3 GPT 11:11:43).
+        A commit is made by at most one call: the first shell call naming `commit` whose start-to-end seconds hold the
+        commit time (docs commits too), as score-run's commit_call maps a commit to the first call within 1.5 s."""
+        def window(e):  # commit times have whole seconds
+            return e['t'][:19], (e.get('end') or e['t'])[:19]
+        owner = {}
+        for c in self.commits:
+            for i, e in enumerate(shells):
+                lo, hi = window(e)
+                if 'commit' in e.get('cmd', e['text']) and lo <= c['time'][:19] <= hi:
+                    owner[id(c)] = i
+                    break
+        total = 0
+        for i, e in enumerate(shells):
+            commits = [c for c in self.commits if owner.get(id(c)) == i]
+            if not any(c['subject'] == PLAN_REVIEW_SUBJECT for c in commits):
+                total += commit_gate_runs(e, len(commits))
+        return total
+
     def check(self, cid, dim, status, evidence):
         if cid in self.manual:
             status, evidence = ('pass' if self.manual[cid]['pass'] else 'fail'), 'judge: ' + self.manual[cid].get('note', '')
@@ -317,11 +397,12 @@ class Evaluation:
             named = [e for e in reviewers if re.search(rf'(?i)\bphase\s*{p[1:]}\b', e['text']) or any(re.search(rf'\b{t}\b', e['text']) for t in ts)]
             recorded = bool(re.search(r'(?i)READY TO ADVANCE', handoff))
             self.check(f'a.phase_verdict.{p}', A, 'pass' if named and recorded else 'fail', f'{len(named)} reviewer dispatches; verdict recorded: {recorded}')
-        kanban = sum('validate-kanban' in e['text'] for e in shells)
+        kanban = sum(literal_kanban_run(e) for e in shells) + \
+            kanban_helper_runs([e for e in self.events if e['kind'] in ('shell', 'edit')], [e for e in shells if e['kind'] == 'shell'])
         self.check('a.kanban_gate', A, 'pass' if kanban >= len(self.tasks) else 'fail', f'{kanban} validate-kanban runs for {len(self.tasks)} tasks')
         code_commits = [c for c in after if any(not f.startswith('docs/') for f in c['files'])]
-        cc = sum(commit_gate_runs(e) for e in shells)
-        self.check('a.commit_gate', A, 'pass' if cc >= len(code_commits) else 'fail', f'{cc} check-commit runs for {len(code_commits)} code commits')
+        cc = self.commit_gate_passes(shells)
+        self.check('a.commit_gate', A, 'pass' if cc >= len(code_commits) else 'fail', f'{cc} check-commit passes for {len(code_commits)} code commits')
         tests = sum(bool(re.search(r'\bpytest\b', e['text'])) for e in impl if e['kind'] == 'shell')
         self.check('a.tests_run', A, 'pass' if tests else 'fail', f'{tests} pytest runs during implement')
         code = re.compile(r'(^|/)(wordstat|tests)/[^/]+\.py$')

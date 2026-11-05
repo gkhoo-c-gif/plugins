@@ -148,6 +148,37 @@ def test_fix_subject_accepts_the_skill_wording():
     assert not score.FIX_SUBJECT.match("fix: address findings")
 
 
+# C3 shapes (gpt-6.1-sol via the bridge, run 20261104T104418Z; claude-opus-5-5, run 20261104T083537Z), shortened.
+
+
+C3_OPUS_DEF = """cat > $CLAUDE_CODE_TMPDIR/lanes.py <<'EOF'
+import sys,subprocess
+F='docs/spec-001-feature/'
+
+
+# usage: lanes.py TASK LANE [comment]
+t,lane=sys.argv[1],sys.argv[2]
+k=open(F+'kanban.md').read()
+open(F+'kanban.md','w').write(k)
+r=subprocess.run(['python','/p/scripts/validate-kanban.py','--path',F],capture_output=True,text=True)
+EOF
+L=$CLAUDE_CODE_TMPDIR/lanes.py
+python $L T5 Ready; python $L T6 Ready; python $L T5 "In Progress"; sed -i '' 's/a/b/' $F/handoff.md"""
+
+
+C3_OPUS_LOOP = ('cd /w; P=/p; F=docs/spec-001-feature; T=$CLAUDE_CODE_TMPDIR; L=$T/lanes.py; R=aebf7ead; '
+                'for t in T5 T6; do python $L $t Done "phase-2 review $R PASS"; '
+                'python $P/scripts/check-dod.py --path $F --task $t | head -1 || true; done')
+
+
+def test_c3_bash_helper_variable_and_gating_source():
+    assert score.helper_moves(C3_OPUS_DEF, {"lanes.py"}) == [('T5', 'Ready'), ('T6', 'Ready'), ('T5', 'In Progress')]
+    assert score.helper_moves(C3_OPUS_LOOP, {"lanes.py"}) == [('T5', 'Done'), ('T6', 'Done')]
+    scripts = dict(score.heredoc_scripts(C3_OPUS_DEF))
+    assert set(scripts) == {"lanes.py"} and "validate-kanban" in scripts["lanes.py"]
+    assert score.heredoc_scripts("cat <<'X' > /t/mv.sh\necho hi\nX\n") == [("mv.sh", "echo hi")]
+
+
 def test_run_summary_heading_accepts_qualified_headings():
     import re
     for h in ("## Run Summary", "## Implementation Run Summary", "## Final Run Summary", "### run summary"):
@@ -156,8 +187,98 @@ def test_run_summary_heading_accepts_qualified_headings():
         assert not re.search(score.RUN_SUMMARY, "x\n%s\n" % h, re.M | re.I), h
 
 
+def test_lane_helper_names_skip_the_plugin_gate_scripts():
+    # C3 Opus run 20261104T083537Z: a call writing kanban.md also wrote `>$P/scripts/check-commit.py`-like paths
+    raw = ("python - <<'EOF'\nopen('docs/f/kanban.md','w').write(k)\nEOF\n"
+           "cat > $T/lanes.py <<'EOF'\nk=open('docs/f/kanban.md').read()\nEOF\n"
+           "x >$P/scripts/check-commit.py; y >$P/scripts/validate-kanban.py; z >$P/scripts/workflow-budget.py; w >kmove.ps1")
+    assert score.lane_helper_names(raw) == {"lanes.py", "kmove.ps1"}
+    assert score.lane_helper_names("open('docs/f/kanban.md','w')\nw >check-board.ps1; v >validate-x.ps1") == set()
+
+
+C3_OPUS_COMMITS = """cd /w; P=/p; T=$CLAUDE_CODE_TMPDIR
+commit() { m=$1; shift
+  python $P/scripts/check-commit.py $m >/dev/null || { python $P/scripts/check-commit.py $m; return 1; }
+  git diff --cached --quiet || return 1
+  git add "$@" && git commit -q -F $m && git log --oneline -1; }
+printf '%s\\n' "feat(semantics): add analyzer" "" "Tasks: T7" > $T/c7.txt
+commit $T/c7.txt minisql/analyzer.py tests/test_analyzer.py || exit 1
+commit $T/c8.txt minisql/executor.py tests/test_executor.py || exit 1
+commit $T/c9.txt docs/spec-001-feature/handoff.md"""
+
+
+def test_bash_commit_function_counts_one_gate_run_per_call():
+    # C3 Opus run 20261104T083537Z: check-commit runs inside commit() (and again only in its failure branch)
+    ar = module('analyze-run')
+    assert ar.static_gate_runs(C3_OPUS_COMMITS)['check-commit'] == 3
+    # a function that runs no gate adds nothing; a literal gate run outside any function still counts once
+    plain = C3_OPUS_COMMITS.replace('python $P/scripts/check-commit.py $m >/dev/null || { python $P/scripts/check-commit.py $m; return 1; }', 'true')
+    assert ar.static_gate_runs(plain)['check-commit'] == 0
+    assert ar.static_gate_runs('python $P/scripts/check-commit.py m.txt && git commit -F m.txt')['check-commit'] == 1
+
+
+# Review probes (scorer-fix review, 2026-11-05): shapes that must NOT count as lane moves or gate runs.
+
+
+def test_helper_moves_skip_mentions_that_are_not_calls():
+    h = {"lanes.py"}
+    assert score.helper_moves("L=$T/lanes.py; cat $L T5 Done", h) == []
+    assert score.helper_moves('L=$T/lanes.py; echo "python $L T5 Done"; # python $L T6 Done', h) == []
+    assert score.helper_moves("L=$T/lanes.py; python $L --dry-run T5 Done", h) == []
+    usage = "cat > $T/lanes.py <<'EOF'\n# usage: python lanes.py T1 Done\nk=open('docs/f/kanban.md').read()\nEOF\nL=$T/lanes.py; python $L T2 Done"
+    assert score.helper_moves(usage, h) == [('T2', 'Done')]
+    assert score.helper_moves("python conv.py T1 Done; python mv.py T2 Done", {"mv.py"}) == [('T2', 'Done')]
+
+
+# Round-2 review probes (2026-11-05)
+
+
+LANES_SRC = ("cat > $T/lanes.py <<'EOF'\nimport sys,subprocess\nk=open('docs/f/kanban.md').read()\n"
+             "subprocess.run(['python','/p/scripts/validate-kanban.py','--path','docs/f'])\nEOF\n")
+
+
+def test_helper_moves_review_round_two():
+    h = {"lanes.py"}
+    define = LANES_SRC + "L=$T/lanes.py\n"
+    assert score.helper_moves(define + "python $L T5 Ready # then python $L T5 Done", h) == [('T5', 'Ready')]
+    assert score.helper_moves(define + "true && echo $L T5 Done", h) == []
+    assert score.helper_moves(define + 'git commit -m "python $L T5 Done recorded"', h) == []
+    assert score.helper_moves(define + "cat > notes.md <<'X'\npython $L T5 Done\nX", h) == []
+    assert score.helper_moves(define + "python $L T5 Done-ish; python lanes.py.bak T6 Done", h) == []
+    assert score.helper_moves(define + "echo ok | python $L T5 Done", h) == [('T5', 'Done')]
+    for call in ('python "$L" T1 Done', 'python ${L} T1 Done', 'python "${L}" T1 Done', 'python "$T/lanes.py" T1 Done'):
+        assert score.helper_moves(define + call, h) == [('T1', 'Done')], call
+    assert score.helper_moves(define + "for t in T1 T2\ndo\n python $L $t Done\ndone\n", h) == [('T1', 'Done'), ('T2', 'Done')]
+
+
 def test_run_summary_heading_stays_on_one_line():
     import re
     for text in ("## Next steps\n\nRun summary: to be written\n", "## Status\nRun Summary pending\n",
                  "## No Run Summary yet\n", "## Draft - Run Summary\n"):
         assert not re.search(score.RUN_SUMMARY, text, re.M | re.I), text
+
+
+# Round-3 review probes (2026-11-05)
+
+
+def test_helper_wrapped_in_a_bash_function():
+    # C2 20261101T192141Z: lane(){ python3 …/lane.py docs/spec-001-feature "$@"; } then `lane T1 "In Progress"`
+    src = ("cat > $T/lane.py <<'EOF'\nk=open('docs/f/kanban.md').read()\nEOF\n"
+           'lane(){ python3 $T/lane.py docs/spec-001-feature "$@"; }\nlane T1 "In Progress"\n'
+           "for t in T4 T5; do lane $t Done; python3 $P/scripts/check-dod.py --task $t; done")
+    assert score.helper_moves(src, {"lane.py"}) == [('T1', 'In Progress'), ('T4', 'Done'), ('T5', 'Done')]
+    assert score.lane_helper_names("cat > $T/mv.sh <<'EOF'\nsed -i '' s/a/b/ kanban.md\nEOF\n") == {"mv.sh"}
+
+
+def test_run_summary_qualifiers_and_helper_move_mentions():
+    import re
+    for h in ('## Overall Run Summary', '## Session Run Summary', '###### Run Summary'):
+        assert re.search(score.RUN_SUMMARY, h, re.M | re.I), h
+    for h in ('##\nRun Summary', '####### Run Summary'):
+        assert not re.search(score.RUN_SUMMARY, h, re.M | re.I), h
+    h = {"lanes.py"}
+    define = "L=$T/lanes.py\n"
+    assert score.helper_moves(define + 'print("python $L T5 Done")', h) == []
+    assert score.helper_moves(define + 'Write-Host "python $L T5 Done"', h) == []
+    assert score.helper_moves(define + 'python $L T5 Done -WhatIf', h) == []
+    assert score.helper_moves('function lane { python3 $T/lanes.py "$@"; }\nlane T2 Done', h) == [('T2', 'Done')]

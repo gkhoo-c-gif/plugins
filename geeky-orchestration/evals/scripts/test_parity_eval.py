@@ -255,6 +255,185 @@ def test_run_summary_heading_accepts_qualified_headings():
         assert not pe.RUN_SUMMARY.search('x\n%s\n' % h), h
 
 
+def test_kanban_gate_counts_runs_inside_a_gating_lane_helper():
+    # C3 Opus run 20261104T083537Z: lanes.py (bash heredoc) moves the task and runs validate-kanban itself
+    helper = ("cat > $CLAUDE_CODE_TMPDIR/lanes.py <<'EOF'\nimport sys,subprocess\nF='docs/f/'\n"
+              "# usage: lanes.py TASK LANE [comment]\nk=open(F+'kanban.md').read()\nopen(F+'kanban.md','w').write(k)\n"
+              "subprocess.run(['python','/p/scripts/validate-kanban.py','--path',F])\nEOF\n"
+              "L=$CLAUDE_CODE_TMPDIR/lanes.py\npython $L T5 Ready; python $L T5 \"In Progress\"")
+    loop = 'L=$T/lanes.py; for t in T5 T6; do python $L $t Done "ok"; done'
+    other = 'python lanes.py T7 "In Review"; echo T8 Done'
+    shells = [{'text': helper}, {'text': loop}, {'text': other}]
+    assert pe.kanban_helper_runs(shells, shells) == 2 + 2 + 1
+    # a helper that does not run validate-kanban gives no credit
+    plain = [{'text': helper.replace('validate-kanban', 'cat')}, {'text': loop}]
+    assert pe.kanban_helper_runs(plain, plain) == 0
+
+
+def test_commit_gate_counts_calls_of_a_bash_commit_function():
+    # C3 Opus run 20261104T083537Z: commit() runs check-commit with its output discarded, then commits
+    text = ("commit() { m=$1; shift\n  python $P/scripts/check-commit.py $m >/dev/null || { python $P/scripts/check-commit.py $m; return 1; }\n"
+            "  git add \"$@\" && git commit -q -F $m; }\ncommit $T/c1.txt a.py || exit 1\ncommit $T/c2.txt b.py || exit 1\ncommit $T/c3.txt c.py")
+    assert pe.commit_gate_runs({'text': text, 'output': ''}) == 3
+    assert pe.commit_gate_runs({'text': 'python check-commit.py m.txt; git commit -F m.txt', 'output': ''}) == 1
+    assert pe.commit_gate_runs({'text': 'git commit -m x', 'output': ''}) == 0
+
+
+def test_review_cases_for_helper_and_commit_gate_counts():
+    # scorer-fix review, 2026-11-05: comment-only gate mention, non-call mentions, keyword functions, readers, aborts
+    src = ("cat > $T/lanes.py <<'EOF'\n# usage: python lanes.py T1 Done\nk=open('docs/f/kanban.md').read()\n"
+           "# validate-kanban is run by the caller\nEOF\n")
+    assert pe.kanban_helper_runs([{'text': src}], [{'text': src + 'L=$T/lanes.py; python $L T2 Done'}]) == 0
+    gating = src.replace('# validate-kanban is run by the caller', "subprocess.run(['python','/p/scripts/validate-kanban.py'])")
+    calls = [{'text': gating + 'L=$T/lanes.py; python $L T2 Done; cat $L T3 Done; echo "$L T4 Done"; python $L --dry-run T5 Done'}]
+    assert pe.kanban_helper_runs(calls, calls) == 1
+    kw = 'function commit { python $P/scripts/check-commit.py $m; git commit -F $m; }\ncommit a; commit b; commit c'
+    assert pe.commit_gate_runs({'text': kw, 'output': ''}) == 3                 # agrees with analyze-run
+    reader = 'show() { cat $P/scripts/check-commit.py; }\nshow; show'
+    assert pe.commit_gate_runs({'text': reader, 'output': ''}) == 1             # the one-call fallback, not 2
+    chain = ("commit() { python $P/scripts/check-commit.py $1 >/dev/null || { python $P/scripts/check-commit.py $1; return 1; }; "
+             "git commit -F $1; }\ncommit c1.txt || exit 1\ncommit c2.txt || exit 1\ncommit c3.txt")
+    assert pe.commit_gate_runs({'text': chain, 'output': 'INVALID_COMMIT_MESSAGE: subject exceeds 72 chars'}) == 0  # only a failure: no pass
+    assert pe.commit_gate_runs({'text': chain, 'output': ''}) == 3
+
+
+def test_review_round_two_scorers_agree_on_helper_calls():
+    src = ("cat > $T/lanes.py <<'EOF'\nimport subprocess\nk=open('docs/f/kanban.md').read()\n"
+           "subprocess.run(['python','/p/scripts/validate-kanban.py','--path','docs/f'])\nEOF\nL=$T/lanes.py\n")
+    for call in ('python "$L" T1 Done', 'python ${L} T1 Done', 'python "$T/lanes.py" T1 Done', 'echo ok | python $L T1 Done'):
+        assert pe.kanban_helper_runs([{'text': src}], [{'text': src + call}]) == 1, call
+    loop = src + 'for t in T1 T2\ndo\n python $L $t Done\ndone\n'
+    assert pe.kanban_helper_runs([{'text': loop}], [{'text': loop}]) == 2
+    assert pe.RUN_SUMMARY.search('## Final Run Summary') and not pe.RUN_SUMMARY.search('## Status\nRun Summary pending')
+
+
+def test_powershell_here_string_helper_counts_in_both_scorers():
+    call = ("@'\nparam($Task,$To)\n$k='docs/f/kanban.md'; Set-Content $k (Get-Content $k)\npython /p/scripts/validate-kanban.py --path docs/f\n"
+            "'@ | Set-Content $env:TEMP\\kmove.ps1\npwsh -File $env:TEMP\\kmove.ps1 -Task T2 -To Done")
+    assert pe.AR.gating_helper_scripts(call) == {'kmove.ps1'}
+    assert pe.kanban_helper_runs([{'text': call}], [{'text': call}]) == 1
+
+
+def test_shell_readers_get_the_command_not_its_json_wrapper():
+    # C3 Opus run 20261104T083537Z: in the observation text the command sits inside JSON quoting; a multi-line quote
+    # masker would read the JSON value's own quotes as one string around the whole command
+    cmd = ('commit() { m=$1; shift\n python $P/scripts/check-commit.py $m >/dev/null || { echo "GATE FAIL $m"; return 1; }\n'
+           ' git commit -q -F $m; }\ncommit $T/c1.txt a.py || exit 1\ncommit $T/c2.txt b.py || exit 1')
+    ev = pe.events([obs('o1', 'Tool: Bash', {'command': cmd})])[0]
+    assert ev['cmd'] == cmd
+    assert pe.commit_gate_runs({**ev, 'output': ''}) == 2
+
+
+def test_codex_cmd_key_and_write_tool_helpers_match_score_run():
+    cmd = ('commit() { m=$1; shift\n python $P/scripts/check-commit.py $m >/dev/null || { echo "GATE FAIL $m"; return 1; }\n'
+           ' git commit -q -F $m; }\ncommit c1.txt a.py\ncommit c2.txt b.py')
+    ev = pe.events([obs('d', 'exec_command', {'cmd': cmd})])[0]
+    assert ev['cmd'] == cmd and pe.commit_gate_runs({**ev, 'output': ''}) == 2
+    content = "F='docs/f/kanban.md'\nopen(F,'w').write(k)\nsubprocess.run(['python','/p/scripts/validate-kanban.py','--path','docs/f'])"
+    py = [{'kind': 'edit', 'name': 'Tool: Write', 'text': content, 'paths': ['/tmp/t/lanes.py']}]
+    assert pe.kanban_helper_runs(py, [{'text': 'python /tmp/t/lanes.py T1 Done'}]) == 0          # score-run registers no .py this way
+    ps = [{'kind': 'edit', 'name': 'Tool: Write', 'text': content, 'paths': ['C:/t/kmove.ps1']}]
+    assert pe.kanban_helper_runs(ps, [{'text': 'pwsh -File C:/t/kmove.ps1 -Task T1 -To Done'}]) == 1
+
+
+def test_commit_gate_review_round_seven():
+    # parity-path review, 2026-11-05
+    kw = ('function commit { m=$1; shift\n python $P/scripts/check-commit.py $m >/dev/null || { python $P/scripts/check-commit.py $m; '
+          'return 1; }\n git add "$@" && git commit -q -F $m; }\n')
+    calls = 'commit c1 a || exit 1\ncommit c2 b || exit 1\ncommit c3 c || exit 1\ncommit c4 d || exit 1'
+    assert pe.commit_gate_runs({'text': kw + calls, 'output': 'INVALID_COMMIT_MESSAGE: subject exceeds 72 chars'}) == 0
+    assert pe.commit_gate_runs({'text': kw + calls, 'output': ''}) == 4
+    # a shown failure after hidden passes: one pass per commit the call made
+    out = 'abc1234 feat(x): add a\nINVALID_COMMIT_MESSAGE:\n  ERROR: subject exceeds 72 chars'
+    assert pe.commit_gate_runs({'text': kw + calls, 'output': out}, commits=1) == 1
+    assert pe.commit_gate_runs({'text': kw + calls, 'output': out}, commits=2) == 2
+    assert pe.commit_gate_runs({'text': 'git commit -m pre\n' + kw + calls, 'output': out}, commits=2) == 0  # a literal commit: no evidence
+    # a helper that prints the verdict: the shown passes are its runs (prefixed lines read as analyze-run reads them)
+    loud = 'commit() { printf "%s: " "$1"; python $P/scripts/check-commit.py "$1" || return 1; git commit -q -F "$1"; }\n'
+    shown = 'a: OK: commit message valid.\nb: OK: commit message valid.\nc: INVALID_COMMIT_MESSAGE: x'
+    assert pe.commit_gate_runs({'text': loud + 'commit a || exit 1\ncommit b || exit 1\ncommit c', 'output': shown}) == 2
+    chain = 'c(){ python3 $P/scripts/check-commit.py --message "$1" || return 1; git commit -q -m "$1"; }\nc a && c b && c c'
+    assert pe.commit_gate_runs({'text': chain, 'output': 'INVALID_COMMIT_MESSAGE: x'}) == 0
+
+
 def test_run_summary_heading_is_a_markdown_heading():
     assert pe.RUN_SUMMARY.search('## Overall Run Summary') and pe.RUN_SUMMARY.search('###### Session Run Summary')
     assert not pe.RUN_SUMMARY.search('####### Run Summary') and not pe.RUN_SUMMARY.search('##\nRun Summary')
+
+
+def test_commit_gate_review_round_eight():
+    # round-7 review: a shown failure of a quiet helper, whatever stopped the command (or nothing did)
+    q = ('c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py --message "$1"; '
+         '%s 1; }; git commit -q -m "$1"; }\n')
+    fail = 'INVALID_COMMIT_MESSAGE: subject exceeds 72 chars'
+    for cmd in (q % 'exit' + 'c a\nc b\nc c', q % 'return' + 'set -x -e\nc a\nc b', q % 'return' + 'if ! c a; then exit 1; fi\nc b',
+                'function Commit-Checked($m) { python /p/scripts/check-commit.py $m *> $null; if ($LASTEXITCODE) { python '
+                '/p/scripts/check-commit.py $m; throw "gate" }; git commit -q -F $m }\nCommit-Checked a\nCommit-Checked b'):
+        assert pe.commit_gate_runs({'text': cmd, 'output': fail}, commits=0) == 0, cmd       # nothing committed: no pass
+    # no stop: the first call fails visibly, the other two pass silently and commit
+    assert pe.commit_gate_runs({'text': q % 'return' + 'c a\nc b\nc c', 'output': fail}, commits=2) == 2
+
+
+def test_round_seven_parity_low_findings():
+    # a shown failure with no pass credits nothing; a loud helper is counted by its shown passes
+    loud = 'c() { python3 /p/scripts/check-commit.py --message "$1" || return 1; git commit -q -m "$1"; }\nc a\nc b\nc c'
+    assert pe.commit_gate_runs({'text': loud, 'output': 'INVALID_COMMIT_MESSAGE: x'}) == 0
+    assert pe.commit_gate_runs({'text': loud, 'output': 'OK: commit message valid.\nINVALID_COMMIT_MESSAGE: x\n'
+                                                        'OK: commit message valid.'}) == 2
+    assert pe.commit_gate_runs({'text': 'python check-commit.py --message x', 'output': ''}) == 1   # hidden: the fallback
+    # literal kanban runs: a helper's own source or a note is not a run
+    assert pe.literal_kanban_run({'text': 'python /p/scripts/validate-kanban.py --path f', 'cmd': 'python /p/scripts/validate-kanban.py --path f'})
+    note = "cat >> docs/f/review-plan.md <<'EOF'\nvalidate-kanban OK\nEOF\ngit commit -q -m x"
+    assert not pe.literal_kanban_run({'text': note, 'cmd': note})
+    here = "@'\npython /p/scripts/validate-kanban.py\n'@ | Set-Content k.ps1"
+    assert not pe.literal_kanban_run({'text': here, 'cmd': here})
+
+
+def test_commit_gate_passes_over_calls():
+    evaluation = pe.Evaluation.__new__(pe.Evaluation)
+    t = lambda s: pe.utc_time(s)
+    evaluation.commits = [{'time': t('2026-11-04T09:30:01Z'), 'subject': 'feat: a'}, {'time': t('2026-11-04T09:30:02Z'), 'subject': 'feat: b'},
+                          {'time': t('2026-11-04T08:00:00Z'), 'subject': pe.PLAN_REVIEW_SUBJECT}]
+    q = ('c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py --message "$1"; '
+         'return 1; }; git commit -q -m "$1"; }\nc a || exit 1\nc b || exit 1\nc c || exit 1')
+    call = {'t': t('2026-11-04T09:30:00.500Z'), 'end': t('2026-11-04T09:30:03Z'), 'text': q, 'cmd': q, 'output': 'INVALID_COMMIT_MESSAGE: x'}
+    assert evaluation.commit_gate_passes([call]) == 2                                   # a and b committed, c failed
+    assert evaluation.commit_gate_passes([{**call, 'end': ''}]) == 0                     # no end time: no commit evidence
+    pr = {'t': t('2026-11-04T08:00:00.200Z'), 'end': t('2026-11-04T08:00:01Z'), 'text': 'python check-commit.py --message m',
+          'cmd': 'python check-commit.py --message m', 'output': 'OK: commit message valid.'}
+    assert evaluation.commit_gate_passes([pr]) == 0                                     # the plan-review commit's own gate
+    ev = pe.events([{**obs('o1', 'Tool: Bash', {'command': 'ls'}), 'endTime': '2026-10-25T03:00:05Z'}])[0]
+    assert ev['end'] == pe.utc_time('2026-10-25T03:00:05Z')
+
+
+def test_commit_gate_review_round_nine():
+    # round-8 review: a shown failure is a run that did not pass, and a commit made without the gate is no pass
+    c1 = ('function C($msg,$files){ $m=$msg; $r=$m | python /p/scripts/check-commit.py; "gate=$LASTEXITCODE $r"; '
+          'git add -- $files 2>$null; git commit -q -m $m 2>&1 | Select -First 2 }\nC m1 a\nC m2 b\nC m3 c')   # stored C1 csvledger 20261020T155628Z
+    out = 'gate=1 INVALID_COMMIT_MESSAGE: subject exceeds 72 chars (75)\ngate=0 OK: commit message valid.\ngate=0 OK: commit message valid.'
+    assert pe.commit_gate_runs({'text': c1, 'output': out}, commits=3) == 2
+    warn = 'cc(){ python /p/scripts/check-commit.py $1 >/dev/null || python /p/scripts/check-commit.py $1; git commit -qF $1; }\n'
+    assert pe.commit_gate_runs({'text': warn + 'cc c1', 'output': 'INVALID_COMMIT_MESSAGE: x'}, commits=1) == 0
+    assert pe.commit_gate_runs({'text': warn + 'cc c1\ncc c2\ncc c3', 'output': 'INVALID_COMMIT_MESSAGE: x'}, commits=3) == 2
+    gated = ('c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py --message "$1"; '
+             'return 1; }; git commit -q -m "$1"; }\n')
+    wip = 'wip() { git add docs && git commit -q -m "docs(tracking): x"; }\n'
+    assert not pe.AR.commits_only_in_helpers(gated + wip + 'c a\nwip')
+    assert pe.commit_gate_runs({'text': gated + wip + 'c a\nwip', 'output': 'INVALID_COMMIT_MESSAGE: x'}, commits=1) == 0
+    tail = 'c() { python3 /p/scripts/check-commit.py --message "$1" | tail -1 && git commit -q -m "$1"; }\nc a\nc b\nc c'
+    shown = 'OK: commit message valid.\nINVALID_COMMIT_MESSAGE: x\nOK: commit message valid.'
+    assert pe.commit_gate_runs({'text': tail, 'output': shown}, commits=3) == 2
+
+
+def test_a_commit_is_made_by_one_call():
+    # round-8 review: back-to-back calls in one second; the commit belongs to the first call naming commit
+    evaluation = pe.Evaluation.__new__(pe.Evaluation)
+    t = pe.utc_time
+    evaluation.commits = [{'time': t('2026-11-04T10:00:05Z'), 'subject': 'feat: a'}]
+    a = {'t': t('2026-11-04T10:00:04.100Z'), 'end': t('2026-11-04T10:00:05.300Z'), 'cmd': 'python3 /p/scripts/check-commit.py --message "$m" && git commit -q -m "$m"',
+         'output': 'OK: commit message valid.'}
+    a['text'] = a['cmd']
+    q = ('c() { python3 /p/scripts/check-commit.py --message "$1" >/dev/null || { python3 /p/scripts/check-commit.py --message "$1"; '
+         'return 1; }; git commit -q -m "$1"; }\nc a || exit 1\nc b || exit 1')
+    b = {'t': t('2026-11-04T10:00:05.600Z'), 'end': t('2026-11-04T10:00:06.100Z'), 'cmd': q, 'text': q, 'output': 'INVALID_COMMIT_MESSAGE: x'}
+    assert evaluation.commit_gate_passes([a, b]) == 1

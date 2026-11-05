@@ -290,40 +290,24 @@ def py_kanban_moves(raw):
     return moves
 
 
-def helper_moves(raw, helpers):
-    """Lane moves made by calling a kanban helper script with `<task> <lane>` arguments, e.g.
-    `python $kb $f T2 Done` or `foreach($t in 'T4','T5'){ python $kb $f $t "In Progress" }`, or with named
-    arguments, e.g. `pwsh -File kmove.ps1 -Task $t -To Done`.
-    Only statements that invoke a helper (by file name or a variable holding its path) count."""
-    text = raw.replace("`r", "").replace("`n", "\n")
-    names = [re.escape(h) for h in helpers]
-    if not names:
-        return []
-    hvars = set(re.findall(r"\$(\w+)\s*=\s*[\"'][^\"'\n]*(?:%s)" % "|".join(names), text, re.I))
-    loops = [(m.start(), m.group(1), re.findall(r"\bT\d+\b", m.group(2)))
-             for m in re.finditer(r"foreach\s*\(\s*\$(\w+)\s+in\s+([^)]*)\)", text, re.I)]
-    # bash: `for t in T1 T2; do python3 $kb $t Done; ...; done`
-    loops += [(m.start(), m.group(1), re.findall(r"\bT\d+\b", m.group(2)))
-              for m in re.finditer(r"\bfor\s+(\w+)\s+in\s+([^;\n]*?)\s*;\s*do\b", text)]
-    loops.sort()
-    moves = []
-    for stmt in re.finditer(r"[^;\n{}]+", text):
-        s = stmt.group(0)
-        if not (re.search("|".join(names), s, re.I) or any(re.search(r"\$%s\b" % v, s) for v in hvars)):
-            continue
-        found = [(m.group(1), m.group(2), m.group(3))
-                 for m in re.finditer(r"(?:\b(T\d+)(?:-[\w-]+)?\b|\$(\w+))['\"]?\s+['\"]?(%s)\b" % LANES, s)]
-        task = re.search(r"-Task\s+['\"]?(?:\b(T\d+)\b|\$(\w+))", s, re.I)
-        lane = re.search(r"-(?:To|Lane)\s+['\"]?(%s)\b" % LANES, s, re.I)
-        if task and lane:
-            found = [(task.group(1), task.group(2), lane.group(1))]
-        for tid, var, ln in found:
-            if tid:
-                ids = [tid]
-            else:  # the loop variable's nearest enclosing foreach
-                ids = next((i for p, v, i in reversed(loops) if v == var and p < stmt.start()), [])
-            moves += [(t, ln) for t in ids]
-    return moves
+_PLUGIN_SCRIPTS = {g + ".py" for g in AR.GATES} | {"workflow-budget.py", "preflight.py"}
+
+
+def lane_helper_names(raw):
+    """Candidate kanban helper scripts in a call that writes kanban.md: a .ps1 it names, a .py this call writes
+    itself, or a heredoc .sh that touches kanban.md. The plugin's own scripts never count (C3 Opus run
+    20261104T083537Z: check-commit.py was taken for a lane helper, so every later commit call became a "lane move")."""
+    found = {n.lower() for n in re.findall(r"([\w-]+\.ps1)\b", raw)
+             if not re.match(r"(?i)(validate|check|preflight)", n)}
+    found |= {n.lower() for n in re.findall(r"(?:Set-Content|Out-File|WriteAll\w*|>)\s*[\"']?[^\"'\s;]*?([\w-]+\.py)\b", raw)
+              if n.lower() not in _PLUGIN_SCRIPTS}
+    found |= {n for n, src in heredoc_scripts(raw) if n.endswith(".sh") and "kanban.md" in src}  # as parity-eval's gating helpers
+    return found
+
+
+# Shell readers shared with parity-eval (analyze-run.py): helper calls and heredoc-written scripts.
+helper_moves = AR.helper_moves
+heredoc_scripts = AR.heredoc_scripts
 
 
 def gate_before_done(done_idx, last_edit_idx, dod_runs, kanban_runs):
@@ -839,6 +823,14 @@ class Scorer:
                 return call.top
         return None
 
+    def commits_made(self, call):
+        """Commits made while this call ran, mapped as commit_call maps them (the gate readers use it to bound the
+        passes a commit helper hid)."""
+        if not (call.ts and call.rts and "commit" in call.cmd):
+            return 0
+        lo, hi = call.ts.timestamp() - 1.5, call.rts.timestamp() + 1.5
+        return sum(1 for c in self.commits if c["call"] is call.top and lo <= c["ct"] <= hi)
+
     # ---- trace-derived facts
     def derive(self):
         T = self.trace
@@ -908,20 +900,13 @@ class Scorer:
         for c in T.mains():
             raw = c.raw
             if "kanban.md" in raw and WRITE_VERB.search(raw):
-                found = {n.lower() for n in re.findall(r"([\w-]+\.ps1)\b", raw)
-                         if not re.match(r"(?i)(validate|check|preflight)", n)}
-                # a Python helper counts only when this call writes the script itself
-                found |= {n.lower() for n in re.findall(
-                    r"(?:Set-Content|Out-File|WriteAll\w*|>)\s*[\"']?[^\"'\s;]*?([\w-]+\.py)\b", raw)}
+                found = lane_helper_names(raw)
                 helpers |= found
                 # only the helper's own source counts: a Write tool's content, or a here-string piped into it
                 written = str(c.inp.get("file_path", "")).replace("\\", "/").rsplit("/", 1)[-1].lower()
                 if c.name == "Write" and written in found and "validate-kanban" in str(c.inp.get("content", "")):
                     kanban_gating.add(written)
-                for m in re.finditer(r"@(['\"])\r?\n(.*?)\r?\n\1@\s*\|\s*(?:Set-Content|Out-File)\s+[^\n;|]*?([\w-]+\.(?:ps1|py))",
-                                     raw.replace("`r", "").replace("`n", "\n"), re.S):
-                    if "validate-kanban" in m.group(2):
-                        kanban_gating.add(m.group(3).lower())
+                kanban_gating |= AR.gating_helper_scripts(raw)  # here-string or heredoc helpers that run the gate
             writes_kanban = ((c.name in ("Edit", "Write", "MultiEdit") and  # a Read of kanban.md is no lane move
                               str(c.inp.get("file_path", "")).replace("\\", "/").endswith("kanban.md")) or
                              ("kanban.md" in raw and re.search(
@@ -966,7 +951,7 @@ class Scorer:
         self.kanban_gate_runs = []
         self.commit_gate_runs = {}
         for c in T.calls:
-            outs = AR.gate_outcomes(c.name, c.inp, (c.text, c.is_error))
+            outs = AR.gate_outcomes(c.name, c.inp, (c.text, c.is_error), self.commits_made(c))
             if not outs:
                 continue
             if any(g == "validate-kanban" for g, _ in outs):
