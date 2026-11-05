@@ -154,6 +154,11 @@ def test_publication_uses_the_recorded_evaluator_and_refuses_new_versions_for_ol
     parity.write_text(json.dumps({'harness': 'claude-code'}), encoding='utf-8')   # made by an older evaluator
     with pytest.raises(ValueError, match='records no evaluator'):
         ls.main(args + ['--evaluator-version', 'parity-eval/1.3'])
+    for v in ('parity-eval/1.3.1', 'parity-eval/1.4-rc1', 'Parity-Eval/1.3'):   # look-alikes of newer versions
+        with pytest.raises(ValueError, match='records no evaluator'):
+            ls.main(args + ['--evaluator-version', v])
+    assert ls.main(args + ['--evaluator-version', 'parity-eval/1.2']) == 0
+    capsys.readouterr()
     assert ls.main(args) == 0 and json.loads(capsys.readouterr().out)['metadata']['evaluator'] == 'parity-eval/1'
 
 @pytest.mark.parametrize('mode', ['dns', 'zero', 'partial', 'covered'])

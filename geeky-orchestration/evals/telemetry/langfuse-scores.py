@@ -15,7 +15,6 @@ import hashlib
 import json
 import os
 from pathlib import Path
-import re
 import sys
 import urllib.request
 import urllib.parse
@@ -134,6 +133,10 @@ def publish(client, expected):
                 'expected_ids': [row['id'] for row in expected]}
 
 
+# evaluator versions that wrote no 'evaluator' field into parity.json (the field exists since parity-eval/1.3)
+LEGACY_EVALUATORS = ('parity-eval/1', 'parity-eval/1.1', 'parity-eval/1.2')
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--run', type=Path, required=True)
@@ -156,9 +159,9 @@ def main(argv=None):
     if recorded and a.evaluator_version and a.evaluator_version != recorded:
         raise ValueError(f'--evaluator-version {a.evaluator_version} does not match parity.json evaluator {recorded}')
     # parity-eval records its version since parity-eval/1.3: a parity.json without one was made by an older evaluator
-    version = re.fullmatch(r'parity-eval/(\d+)(?:\.(\d+))?', (a.evaluator_version or '').strip())
-    if not recorded and version and (int(version.group(1)), int(version.group(2) or 0)) >= (1, 3):
-        raise ValueError(f'parity.json records no evaluator, so an evaluator older than {a.evaluator_version} made it')
+    if not recorded and a.evaluator_version and a.evaluator_version not in LEGACY_EVALUATORS:
+        raise ValueError(f'parity.json records no evaluator, so it was made before parity-eval/1.3; '
+                         f'--evaluator-version must be one of {", ".join(LEGACY_EVALUATORS)}, not {a.evaluator_version}')
     a.evaluator_version = a.evaluator_version or recorded or 'parity-eval/1'
     scope = load_scope(a.scope, [a.run / 'run.json'] + ([a.coverage] if a.coverage else []))
     bind_run(scope, run)
