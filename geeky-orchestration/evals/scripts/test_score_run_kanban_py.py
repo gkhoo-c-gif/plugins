@@ -290,11 +290,15 @@ def test_commit_gate_counts_implement_stage_runs_and_commits_made():
     assert status == 'fail' and 'call 1: 0 check-commit run(s) for 1 commit(s)' in evidence
     sc.commit_gate_runs = {1: 1, 2: 1}
     assert sc.commit_gate_before()[0] == 'pass'
-    # commits made by a call, as commit_call maps them; the gate readers get them
-    top, other = NS(idx=5), NS(idx=6)
-    sc.commits = [{'call': top, 'ct': 100.0}, {'call': other, 'ct': 100.5}]
+    # commits made by a call, as commit_maker maps them; the gate readers get them. Stored mock shape (C0 20261030T035215Z):
+    # the implement gate call ends, then the impl-review docs commit lands within 1.5 s but inside a later call's run
     ts = lambda s: dt.datetime.fromtimestamp(s)
-    call = NS(ts=ts(99), rts=ts(101), cmd='commit a', top=top)
-    assert sc.commits_made(call) == 1
-    assert sc.commits_made(NS(ts=ts(99), rts=ts(101), cmd='ls', top=top)) == 0
+    gate = NS(idx=47, ts=ts(25.837), rts=ts(25.978), cmd='python check-commit.py m && git commit -q -F m')
+    later = NS(idx=57, ts=ts(27.1), rts=ts(27.4), cmd='git commit -q -F n')
+    gate.top, later.top = gate, later
+    sc.trace = NS(calls=[gate, later])
+    assert sc.commit_maker({'ct': 25}) is gate and sc.commit_maker({'ct': 27}) is later
+    assert sc.commit_maker({'ct': 26}) is gate     # no call's run holds second 26; the gate call ends within 1.5 s: the fallback
+    sc.commits = [{'made_by': gate, 'ct': 25}, {'made_by': later, 'ct': 27}]
+    assert sc.commits_made(gate) == 1 and sc.commits_made(later) == 1
     assert 'self.commits_made(c)' in inspect.getsource(score.Scorer.derive)

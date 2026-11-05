@@ -74,6 +74,7 @@ import importlib.util
 import hashlib
 import shlex
 import json
+import math
 import os
 import re
 import shutil
@@ -759,7 +760,8 @@ class Scorer:
                 entry['captured_prefix'] = entry['sha']
                 entry['sha'] = matches[0]['sha']
         for c in self.commits:
-            c["call"] = self.commit_call(c)
+            c["made_by"] = self.commit_maker(c)
+            c["call"] = c["made_by"].top if c["made_by"] else None
             c["stage"] = self.trace.stage_of(c["call"]) if c["call"] else self.stage_by_time(c["ct"])
         expected = {x['sha'] for x in (self.trace.process or {}).get('expected_implementation_commits', [])}
         for cm in self.commits:
@@ -816,20 +818,19 @@ class Scorer:
                 stage = s
         return stage
 
-    def commit_call(self, c):
-        for call in self.trace.calls:
-            if call.ts and call.rts and "commit" in call.cmd and \
-                    call.ts.timestamp() - 1.5 <= c["ct"] <= call.rts.timestamp() + 1.5:
-                return call.top
-        return None
+    def commit_maker(self, c):
+        """The call that made commit c: the first call naming `commit` whose own run, from its start second to its result,
+        holds the commit time (git times have whole seconds), as parity-eval maps commits; only if none does, the first
+        such call within 1.5 s (clock skew). Without the first rule a commit made just after a check-commit call ended
+        went to that call (stored mocks: the impl-review docs commit given to the last implement gate call)."""
+        calls = [x for x in self.trace.calls if x.ts and x.rts and "commit" in x.cmd]
+        exact = next((x for x in calls if math.floor(x.ts.timestamp()) <= c["ct"] <= x.rts.timestamp()), None)
+        return exact or next((x for x in calls if x.ts.timestamp() - 1.5 <= c["ct"] <= x.rts.timestamp() + 1.5), None)
 
     def commits_made(self, call):
-        """Commits made while this call ran, mapped as commit_call maps them (the gate readers use it to bound the
-        passes a commit helper hid)."""
-        if not (call.ts and call.rts and "commit" in call.cmd):
-            return 0
-        lo, hi = call.ts.timestamp() - 1.5, call.rts.timestamp() + 1.5
-        return sum(1 for c in self.commits if c["call"] is call.top and lo <= c["ct"] <= hi)
+        """Commits this call made, as commit_maker maps them (the gate readers use it to bound the passes a commit
+        helper hid)."""
+        return sum(1 for c in self.commits if c.get("made_by") is call)
 
     # ---- trace-derived facts
     def derive(self):
