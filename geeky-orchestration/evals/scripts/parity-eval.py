@@ -33,6 +33,8 @@ SPEC_SUBJECT = re.compile(r'^docs: author feature specification in \S+$')
 PLAN_REVIEW_SUBJECT = 'chore(plan): Plan review — align documents, fix sequencing'
 # impl-review SKILL.md prescribes "Address N required review findings"; "critical" is the older wording (as score-run)
 FIX_SUBJECT = re.compile(r'^fix\(spec\): Address \d+ (?:required|critical) review findings from impl-review$')
+# "## Run Summary", or one qualified as Implementation / Final / Overall / Session, on one line (as score-run)
+RUN_SUMMARY = re.compile(r'(?im)^#{1,6}[ \t]*(?:(?:Implementation|Final|Overall|Session)[ \t]+)?Run Summary\b')
 FROZEN = ('implementation-plan.md', 'feature-specification.md', 'draft.md', 'references.md')
 CRITICAL = {'dp02', 'dp05', 'dp09', 'dp10', 'dp11'}
 SPAWN = {'Tool: Agent', 'Tool: Task', 'spawn_agent'}
@@ -271,7 +273,7 @@ class Evaluation:
             notes = list(self.folder.glob(f'tasks/{t}-*.notes.md'))
             self.check(f'a.notes.{t}', A, 'pass' if notes and notes[0].stat().st_size else 'fail', notes[0].name if notes else 'missing')
         handoff = (self.folder / 'handoff.md').read_text(encoding='utf-8') if (self.folder / 'handoff.md').exists() else ''
-        summary = 'pass' if re.search(r'(?im)^#+\s*Run Summary', handoff) else 'fail'
+        summary = 'pass' if RUN_SUMMARY.search(handoff) else 'fail'
         self.check('a.run_summary', A, summary, 'Run Summary heading in handoff.md')
         hb = self.folder / '.heartbeat'
         hb_text = hb.read_text(encoding='utf-8') if hb.exists() else ''

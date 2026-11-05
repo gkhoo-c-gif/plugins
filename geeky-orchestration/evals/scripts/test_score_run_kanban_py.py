@@ -146,3 +146,18 @@ def test_fix_subject_accepts_the_skill_wording():
     assert score.FIX_SUBJECT.match("fix(spec): Address 1 required review findings from impl-review")
     assert score.FIX_SUBJECT.match("fix(spec): Address 2 critical review findings from impl-review")
     assert not score.FIX_SUBJECT.match("fix: address findings")
+
+
+def test_run_summary_heading_accepts_qualified_headings():
+    import re
+    for h in ("## Run Summary", "## Implementation Run Summary", "## Final Run Summary", "### run summary"):
+        assert re.search(score.RUN_SUMMARY, "x\n%s\n" % h, re.M | re.I), h
+    for h in ("## Summary", "Run Summary without heading", "## Running summary"):
+        assert not re.search(score.RUN_SUMMARY, "x\n%s\n" % h, re.M | re.I), h
+
+
+def test_run_summary_heading_stays_on_one_line():
+    import re
+    for text in ("## Next steps\n\nRun summary: to be written\n", "## Status\nRun Summary pending\n",
+                 "## No Run Summary yet\n", "## Draft - Run Summary\n"):
+        assert not re.search(score.RUN_SUMMARY, text, re.M | re.I), text

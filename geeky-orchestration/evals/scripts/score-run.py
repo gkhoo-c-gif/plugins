@@ -94,6 +94,9 @@ PLAN_REVIEW_SUBJECT = "chore(plan): Plan review — align documents, fix sequenc
 SPEC_SUBJECT = re.compile(r"^docs: author feature specification in \S+$")
 # The impl-review skill prescribes "required" (skills/impl-review/SKILL.md); earlier skill versions said "critical"
 FIX_SUBJECT = re.compile(r"^fix\(spec\): Address \d+ (?:required|critical) review findings from impl-review$")
+# handoff.md "## Run Summary", or one qualified as Implementation / Final / Overall / Session ("## Final Run Summary"),
+# on one line (a pattern string: the caller adds re.M | re.I)
+RUN_SUMMARY = r"^#{1,6}[ \t]*(?:(?:Implementation|Final|Overall|Session)[ \t]+)?Run Summary\b"
 # Leading word of an executable Tests/Validation command. "python" takes an optional version suffix
 # (python3, python3.11); a bare python\b cannot match python3 because 3 is a word character.
 EXEC_HEAD = r"(?:python(?:\d+(?:\.\d+)*)?|py|pytest|pwsh|bash|sh|node|npm|uv)"
@@ -1437,7 +1440,7 @@ class Scorer:
         self.check("adh.heartbeat_final", A, "pass" if status in ("done", "paused") else "fail",
                    f".heartbeat status={status}")
         ho = self.folder / "handoff.md"
-        rs = ho.exists() and re.search((r"^#{1,6}\s*(?:Implementation\s+)?Run Summary" if self.strict else r"^#{1,6}\s*Run Summary"), ho.read_text(encoding="utf-8", errors="replace"),
+        rs = ho.exists() and re.search(RUN_SUMMARY, ho.read_text(encoding="utf-8", errors="replace"),
                                        re.M | re.I)
         self.check("adh.run_summary", A, "pass" if rs else "fail", "Run Summary heading in handoff.md"
                    if rs else "no Run Summary heading in handoff.md")
